@@ -1,0 +1,215 @@
+items:
+  none:
+    toggle_button_off:
+      name: "&4Off"
+      help:
+        - ""
+      lore:
+        - ""
+    toggle_button_on:
+      name: "&aOn"
+      help:
+        - ""
+      lore:
+        - ""
+
+  main_menu:
+    base_plate:
+      name: "&6Base plate"
+      help:
+        - ""
+      lore:
+        - "<empty>"
+    arms:
+      name: "&6Arms visible"
+      help:
+        - ""
+      lore:
+        - "<empty>"
+    small_stand:
+      name: "&6Small Model"
+      help:
+        - ""
+      lore:
+        - "<empty>"
+    no_gravity:
+      name: "&6No Gravity"
+      help:
+        - ""
+      lore:
+        - "<empty>"
+    invisible:
+      name: "&6Invisible"
+      help:
+        - ""
+      lore:
+        - "<empty>"
+    display_name:
+      name: "&6Display name visible"
+      help:
+        - ""
+      lore:
+        - "The name can be set with a name tag."
+    rotation_left_arm:
+      name: "&6Rotate Left Arm"
+      help:
+        - ""
+      lore:
+        - ""
+    rotation_left_leg:
+      name: "&6Rotate Left Leg"
+      help:
+        - ""
+      lore:
+        - ""
+    rotation_right_arm:
+      name: "&6Rotate Right Arm"
+      help:
+        - ""
+      lore:
+        - ""
+    rotation_right_leg:
+      name: "&6Rotate Right Leg"
+      help:
+        - ""
+      lore:
+        - ""
+    rotation_body:
+      name: "&6Rotate Body"
+      help:
+        - ""
+      lore:
+        - ""
+    rotation_head:
+      name: "&6Rotate Head"
+      help:
+        - ""
+      lore:
+        - ""
+    position:
+      name: "&6Position"
+      help:
+        - ""
+      lore:
+        - ""
+    helmet:
+      name: "&6Helmet"
+      help:
+        - ""
+      lore:
+        - ""
+    chestplate:
+      name: "&6Chestplate"
+      help:
+        - ""
+      lore:
+        - ""
+    leggings:
+      name: "&6Leggings"
+      help:
+        - ""
+      lore:
+        - ""
+    boots:
+      name: "&6Boots"
+      help:
+        - ""
+      lore:
+        - ""
+    left_hand:
+      name: "&6Left Hand"
+      help:
+        - ""
+      lore:
+        - ""
+    right_hand:
+      name: "&6Right hand"
+      help:
+        - ""
+      lore:
+        - ""
+
+  settings:
+    add_001:
+      name: "+0.01"
+      lore:
+        - "Shift+Click: +0.00001"
+      help:
+        - ""
+    add_01:
+      name: "+0.1"
+      lore:
+        - "Shift+Click: +0.0001"
+      help:
+        - ""
+    add_1:
+      name: "+1.0"
+      lore:
+        - "Shift+Click: +0.001"
+      help:
+        - ""
+    remove_001:
+      name: "-0.01"
+      lore:
+        - "Shift+Click: -0.00001"
+      help:
+        - ""
+    remove_01:
+      name: "-0.1"
+      lore:
+        - "Shift+Click: -0.0001"
+      help:
+        - ""
+    remove_1:
+      name: "-1.0"
+      lore:
+         - "Shift+Click: -0.001"
+      help:
+        - ""
+    x_pos:
+      name: "x = %VALUE%"
+      lore:
+        - "Click to set on 0"
+      help:
+        - ""
+    y_pos:
+      name: "y = %VALUE%"
+      lore:
+        - "Click to set on 0"
+      help:
+        - ""
+    z_pos:
+      name: "z = %VALUE%"
+      lore:
+        - "Click to set on 0"
+      help:
+        - ""
+    yaw:
+      name: "yaw = %VALUE%"
+      lore:
+        - "Click to set to 0"
+      help:
+        - ""
+    free_edit:
+      name: "Free edit"
+      lore:
+        - ""
+      help:
+        - ""
+    back:
+      name: "Back"
+      lore:
+        - ""
+      help:
+        - ""
+
+inventories:
+  main_menu: "Edit Armor Stand"
+  settings: "Edit Armor Stand"
+
+msg:
+  free_edit:
+    cancelled: "Free edit mode was canceled!"
+  edit:
+    open:
+      cancelled: "&4You are not allowed to Edit the ArmorStand!"
