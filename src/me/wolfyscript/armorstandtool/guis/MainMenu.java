@@ -4,10 +4,12 @@ import me.wolfyscript.armorstandtool.ArmorStandTool;
 import me.wolfyscript.armorstandtool.data.OptionType;
 import me.wolfyscript.armorstandtool.data.PlayerCache;
 import me.wolfyscript.utilities.api.inventory.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,6 +17,8 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class MainMenu extends GuiWindow {
+
+    private int[] equipmentSlots = new int[]{8, 17, 26, 35, 44, 53};
 
     public MainMenu(InventoryAPI inventoryAPI) {
         super("main_menu", inventoryAPI, 54);
@@ -87,8 +91,6 @@ public class MainMenu extends GuiWindow {
     public void onAction(GuiActionEvent event) {
         if (event.verify(this)) {
             if (event.getAction().startsWith("rotation_") || event.getAction().equals("position")) {
-                System.out.println(" -> "+event.getAction());
-                System.out.println(OptionType.valueOf(event.getAction().toUpperCase()).name());
                 ArmorStandTool.getPlayerCache(event.getPlayer()).setCurrentOption(OptionType.valueOf(event.getAction().toUpperCase()));
                 event.getGuiHandler().changeToInv("settings");
             } else if (event.getAction().startsWith("toggle_button_")) {
@@ -124,32 +126,42 @@ public class MainMenu extends GuiWindow {
     public void onClick(GuiClickEvent event) {
         if (event.verify(this)) {
             ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
-            int slot = event.getRawSlot();
-            if(slot != 8 && slot != 17 && slot != 26 && slot != 35 && slot != 44 && slot != 53){
-                event.setCancelled(true);
-            }else{
-                ItemStack newItem = event.getCursor();
-                switch (slot){
-                    case 8:
-                        stand.setHelmet(newItem);
-                        break;
-                    case 17:
-                        stand.setChestplate(newItem);
-                        break;
-                    case 26:
-                        stand.setLeggings(newItem);
-                        break;
-                    case 35:
-                        stand.setBoots(newItem);
-                        break;
-                    case 44:
-                        stand.getEquipment().setItemInOffHand(newItem);
-                        break;
-                    case 53:
-                        stand.getEquipment().setItemInMainHand(newItem);
+            if(event.getClickedInventory().equals(event.getPlayer().getOpenInventory().getTopInventory())){
+                int slot = event.getRawSlot();
+                if(slot != 8 && slot != 17 && slot != 26 && slot != 35 && slot != 44 && slot != 53){
+                    event.setCancelled(true);
                 }
-
+                Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () ->{
+                    stand.setHelmet(event.getClickedInventory().getItem(8));
+                    stand.setChestplate(event.getClickedInventory().getItem(17));
+                    stand.setLeggings(event.getClickedInventory().getItem(26));
+                    stand.setBoots(event.getClickedInventory().getItem(35));
+                    stand.getEquipment().setItemInOffHand(event.getClickedInventory().getItem(44));
+                    stand.getEquipment().setItemInMainHand(event.getClickedInventory().getItem(53));
+                }, 1);
+            }else{
+                if(event.getClickType().isShiftClick()){
+                    event.setCancelled(true);
+                }
             }
         }
     }
+
+    @EventHandler
+    public void onDrag(GuiItemDragEvent event){
+        if(event.verify(this)){
+            ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
+            Inventory inventory = event.getView().getTopInventory();
+            Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () ->{
+                stand.setHelmet(event.getView().getItem(8));
+                stand.setChestplate(inventory.getItem(17));
+                stand.setLeggings(inventory.getItem(26));
+                stand.setBoots(inventory.getItem(35));
+                stand.getEquipment().setItemInOffHand(inventory.getItem(44));
+                stand.getEquipment().setItemInMainHand(inventory.getItem(53));
+            }, 1);
+        }
+    }
+
+
 }

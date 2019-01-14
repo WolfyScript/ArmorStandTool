@@ -1,13 +1,13 @@
 items:
   none:
     toggle_button_off:
-      name: "&4Off"
+      name: "&4Aus"
       help:
         - ""
       lore:
         - ""
     toggle_button_on:
-      name: "&aOn"
+      name: "&aAn"
       help:
         - ""
       lore:
@@ -15,73 +15,73 @@ items:
 
   main_menu:
     base_plate:
-      name: "&6Base plate"
+      name: "&6Bodenplatte"
       help:
         - ""
       lore:
         - "<empty>"
     arms:
-      name: "&6Arms visible"
+      name: "&6Arme"
       help:
         - ""
       lore:
         - "<empty>"
     small_stand:
-      name: "&6Small Model"
+      name: "&6Kleiner Stand"
       help:
         - ""
       lore:
         - "<empty>"
     no_gravity:
-      name: "&6No Gravity"
+      name: "&6Gravitation"
       help:
         - ""
       lore:
         - "<empty>"
     invisible:
-      name: "&6Invisible"
+      name: "&6Sichtbar"
       help:
         - ""
       lore:
         - "<empty>"
     display_name:
-      name: "&6Display name visible"
+      name: "&6Name sichtbar"
       help:
         - ""
       lore:
-        - "The name can be set with a name tag."
+        - "Der Name kann mit einem Namensschild geändert werden!"
     rotation_left_arm:
-      name: "&6Rotate Left Arm"
+      name: "&6Linker Arm"
       help:
         - ""
       lore:
         - ""
     rotation_left_leg:
-      name: "&6Rotate Left Leg"
+      name: "&6Linkes Bein"
       help:
         - ""
       lore:
         - ""
     rotation_right_arm:
-      name: "&6Rotate Right Arm"
+      name: "&6Rechter Arm"
       help:
         - ""
       lore:
         - ""
     rotation_right_leg:
-      name: "&6Rotate Right Leg"
+      name: "&6Rechtes Bein"
       help:
         - ""
       lore:
         - ""
     rotation_body:
-      name: "&6Rotate Body"
+      name: "&6Körper drehen"
       help:
         - ""
       lore:
         - ""
     rotation_head:
-      name: "&6Rotate Head"
+      name: "&6Kopf drehen"
       help:
         - ""
       lore:
@@ -93,37 +93,37 @@ items:
       lore:
         - ""
     helmet:
-      name: "&6Helmet"
+      name: "&6Helm"
       help:
         - ""
       lore:
         - ""
     chestplate:
-      name: "&6Chestplate"
+      name: "&6Brustplatte"
       help:
         - ""
       lore:
         - ""
     leggings:
-      name: "&6Leggings"
+      name: "&6Hose"
       help:
         - ""
       lore:
         - ""
     boots:
-      name: "&6Boots"
+      name: "&6Schuhe"
       help:
         - ""
       lore:
         - ""
     left_hand:
-      name: "&6Left Hand"
+      name: "&6Linke Hand"
       help:
         - ""
       lore:
         - ""
     right_hand:
-      name: "&6Right hand"
+      name: "&6Rechte Hand"
       help:
         - ""
       lore:
@@ -166,65 +166,50 @@ items:
          - "Shift+Click: -0.001"
       help:
         - ""
-    x_value:
-      name: "x = %VALUE%"
-      lore: []
-      help:
-        - ""
-    y_value:
-      name: "y = %VALUE%"
-      lore: []
-      help:
-        - ""
-    z_value:
-      name: "z = %VALUE%"
-      lore: []
-      help:
-        - ""
     x_pos:
       name: "x = %VALUE%"
       lore:
-        - "Click to set on 0"
+        - "Klick um auf 0 zu setzen"
       help:
         - ""
     y_pos:
       name: "y = %VALUE%"
       lore:
-        - "Click to set on 0"
+        - "Klick um auf 0 zu setzen"
       help:
         - ""
     z_pos:
       name: "z = %VALUE%"
       lore:
-        - "Click to set on 0"
+        - "Klick um auf 0 zu setzen"
       help:
         - ""
     yaw:
       name: "yaw = %VALUE%"
       lore:
-        - "Click to set to 0"
+        - "Klick um auf 0 zu setzen"
       help:
         - ""
     free_edit:
-      name: "Free edit"
+      name: "Frei bearbeiten"
       lore:
         - ""
       help:
         - ""
     back:
-      name: "Back"
+      name: "Zurück"
       lore:
         - ""
       help:
         - ""
 
 inventories:
-  main_menu: "Edit Armor Stand"
-  settings: "Edit Armor Stand"
+  main_menu: "ArmorStand bearbeiten"
+  settings: "ArmorStand bearbeiten"
 
 msg:
   free_edit:
-    cancelled: "Free edit mode was canceled!"
+    cancelled: "Freies Bearbeiten wurde abgebrochen!"
   edit:
     open:
-      cancelled: "&4You are not allowed to Edit the ArmorStand!"
+      cancelled: "&4Du kannst diesen Rüstungsständer nicht bearbeiten!"

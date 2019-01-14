@@ -53,9 +53,15 @@ public class SettingsGui extends GuiWindow {
             event.setItem(19, "remove_01");
             event.setItem(20, "remove_001");
 
-            event.setItem(3, event.getItem("x_pos", "%VALUE%", String.valueOf(stand.getLocation().getX())));
-            event.setItem(12, event.getItem("y_pos", "%VALUE%", String.valueOf(stand.getLocation().getY())));
-            event.setItem(21, event.getItem("z_pos", "%VALUE%", String.valueOf(stand.getLocation().getZ())));
+            if (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption().equals(OptionType.POSITION)) {
+                event.setItem(3, event.getItem("x_value", "%VALUE%", String.valueOf(stand.getLocation().getX())));
+                event.setItem(12, event.getItem("y_value", "%VALUE%", String.valueOf(stand.getLocation().getY())));
+                event.setItem(21, event.getItem("z_value", "%VALUE%", String.valueOf(stand.getLocation().getZ())));
+            }else{
+                event.setItem(3, event.getItem("x_pos", "%VALUE%", String.valueOf(stand.getLocation().getX())));
+                event.setItem(12, event.getItem("y_pos", "%VALUE%", String.valueOf(stand.getLocation().getY())));
+                event.setItem(21, event.getItem("z_pos", "%VALUE%", String.valueOf(stand.getLocation().getZ())));
+            }
 
             event.setItem(4, "add_001");
             event.setItem(5, "add_01");
@@ -212,20 +218,22 @@ public class SettingsGui extends GuiWindow {
             ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
             Location currentLocation = stand.getLocation();
 
-            if (event.getAction().startsWith("remove_") || event.getAction().startsWith("add_")) {
+            String action = event.getAction();
+
+            if (action.startsWith("remove_") || action.startsWith("add_")) {
                 switch (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()) {
                     case POSITION:
                         if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            teleportStand(stand, currentLocation.add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0), event.getPlayer());
+                            teleportStand(stand, currentLocation.add(getAmount(action, event.getClickType().isShiftClick()), 0, 0), event.getPlayer());
                         }
                         if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            teleportStand(stand, currentLocation.add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0), event.getPlayer());
+                            teleportStand(stand, currentLocation.add(0, getAmount(action, event.getClickType().isShiftClick()), 0), event.getPlayer());
                         }
                         if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            teleportStand(stand, currentLocation.add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())), event.getPlayer());
+                            teleportStand(stand, currentLocation.add(0, 0, getAmount(action, event.getClickType().isShiftClick())), event.getPlayer());
                         }
                         if (event.getRawSlot() >= 27 && event.getRawSlot() < 35) {
-                            currentLocation.setYaw(currentLocation.getYaw() + getAmount(event.getAction(), event.getClickType().isShiftClick()));
+                            currentLocation.setYaw(currentLocation.getYaw() + getAmount(action, event.getClickType().isShiftClick()));
                             teleportStand(stand, currentLocation, event.getPlayer());
                         }
                         break;
@@ -317,6 +325,82 @@ public class SettingsGui extends GuiWindow {
                     event.getGuiHandler().close();
                 }
 
+            }else if(event.getAction().endsWith("_pos")){
+                switch(ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()){
+                    case ROTATION_RIGHT_LEG:
+                        switch (action){
+                            case "x_pos":
+                                stand.setRightLegPose(stand.getRightLegPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setRightLegPose(stand.getRightLegPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setRightLegPose(stand.getRightLegPose().setZ(0));
+                        }
+                        break;
+                    case ROTATION_RIGHT_ARM:
+                        switch (action){
+                            case "x_pos":
+                                stand.setRightArmPose(stand.getRightArmPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setRightArmPose(stand.getRightArmPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setRightArmPose(stand.getRightArmPose().setZ(0));
+                        }
+                        break;
+                    case ROTATION_LEFT_LEG:
+                        switch (action){
+                            case "x_pos":
+                                stand.setLeftLegPose(stand.getLeftLegPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setLeftLegPose(stand.getLeftLegPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setLeftLegPose(stand.getLeftLegPose().setZ(0));
+                        }
+                        break;
+                    case ROTATION_LEFT_ARM:
+                        switch (action){
+                            case "x_pos":
+                                stand.setLeftArmPose(stand.getLeftArmPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setLeftArmPose(stand.getLeftArmPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setLeftArmPose(stand.getLeftArmPose().setZ(0));
+                        }
+                        break;
+                    case ROTATION_HEAD:
+                        switch (action){
+                            case "x_pos":
+                                stand.setHeadPose(stand.getHeadPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setHeadPose(stand.getHeadPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setHeadPose(stand.getHeadPose().setZ(0));
+                        }
+                        break;
+                    case ROTATION_BODY:
+                        switch (action){
+                            case "x_pos":
+                                stand.setBodyPose(stand.getBodyPose().setX(0));
+                                break;
+                            case "y_pos":
+                                stand.setBodyPose(stand.getBodyPose().setY(0));
+                                break;
+                            case "z_pos":
+                                stand.setBodyPose(stand.getBodyPose().setZ(0));
+                        }
+                }
+            }else if(action.equals("yaw")){
+                stand.getLocation().setYaw(0);
             } else if (event.getAction().equals("back")) {
                 event.getGuiHandler().openLastInv();
             }
@@ -327,7 +411,9 @@ public class SettingsGui extends GuiWindow {
     @EventHandler
     public void onClick(GuiClickEvent event) {
         if (event.verify(this)) {
-
+            if(event.getClickType().isShiftClick()){
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -351,13 +437,19 @@ public class SettingsGui extends GuiWindow {
     }
 
     private boolean teleportStand(ArmorStand stand, Location location, Player player) {
-        if (WolfyUtilities.hasWorldGuard()) {
+        if(WolfyUtilities.hasPlotSquared() && PlotUtils.isPlotWorld(location.getWorld())){
+            if(PlotUtils.hasPerm(player, location)){
+                stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                return true;
+            }
+            return false;
+        }else if (WolfyUtilities.hasWorldGuard()) {
             return WGUtils.teleportStand(stand, location, player);
-        } else if(!WolfyUtilities.hasPlotSquared() || PlotUtils.hasPerm(player, location)){
+        }else{
             stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
             return true;
         }
-        return false;
+
     }
 
 

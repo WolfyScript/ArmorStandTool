@@ -25,12 +25,10 @@ public class WGUtils {
     }
 
     public static boolean hasPermBuild(Location location, Player player) {
-
         if (hasPermBuild(location, player, Flags.BUILD)) {
             return true;
         }
         return false;
-
     }
 
     public static boolean hasPermBuild(Location location, Player player, StateFlag... flag) {
@@ -39,10 +37,7 @@ public class WGUtils {
         RegionQuery query = container.createQuery();
         ApplicableRegionSet set = query.getApplicableRegions(loc);
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-        if (set.testState(localPlayer, flag)) {
-            return true;
-        }
-        return false;
+        return set.testState(localPlayer, flag) || player.hasPermission("worldguard.region.bypass.*") || player.hasPermission("worldguard.region.bypass."+location.getWorld().getName());
     }
 
 }

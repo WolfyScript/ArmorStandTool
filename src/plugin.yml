@@ -2,9 +2,6 @@ name: ArmorStandTool
 api-version: 1.13
 version: 0.1.1
 author: WolfyScript
-softdepend:
-  - WorldGuard
-  - PlotSquared
 depend:
   - WolfyUtilities
 
