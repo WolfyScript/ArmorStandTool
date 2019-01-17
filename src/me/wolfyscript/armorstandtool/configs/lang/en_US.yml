@@ -12,123 +12,121 @@ items:
         - ""
       lore:
         - ""
-
   main_menu:
     base_plate:
-      name: "&6Base plate"
+      name: "&a&lBase plate"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     arms:
-      name: "&6Arms visible"
+      name: "&a&lArms visible"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     small_stand:
-      name: "&6Small Model"
+      name: "&a&lSmall Model"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     no_gravity:
-      name: "&6No Gravity"
+      name: "&a&lGravity"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     invisible:
-      name: "&6Invisible"
+      name: "&a&lInvisible"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     display_name:
-      name: "&6Display name visible"
+      name: "&a&lDisplay name visible"
       help:
         - ""
       lore:
         - "The name can be set with a name tag."
     rotation_left_arm:
-      name: "&6Rotate Left Arm"
+      name: "&a&lRotate Left Arm"
       help:
         - ""
       lore:
         - ""
     rotation_left_leg:
-      name: "&6Rotate Left Leg"
+      name: "&a&lRotate Left Leg"
       help:
         - ""
       lore:
         - ""
     rotation_right_arm:
-      name: "&6Rotate Right Arm"
+      name: "&a&lRotate Right Arm"
       help:
         - ""
       lore:
         - ""
     rotation_right_leg:
-      name: "&6Rotate Right Leg"
+      name: "&a&lRotate Right Leg"
       help:
         - ""
       lore:
         - ""
     rotation_body:
-      name: "&6Rotate Body"
+      name: "&a&lRotate Body"
       help:
         - ""
       lore:
         - ""
     rotation_head:
-      name: "&6Rotate Head"
+      name: "&a&lRotate Head"
       help:
         - ""
       lore:
         - ""
     position:
-      name: "&6Position"
+      name: "&a&lPosition"
       help:
         - ""
       lore:
         - ""
     helmet:
-      name: "&6Helmet"
+      name: "&a&lHelmet"
       help:
         - ""
       lore:
         - ""
     chestplate:
-      name: "&6Chestplate"
+      name: "&a&lChestplate"
       help:
         - ""
       lore:
         - ""
     leggings:
-      name: "&6Leggings"
+      name: "&a&lLeggings"
       help:
         - ""
       lore:
         - ""
     boots:
-      name: "&6Boots"
+      name: "&a&lBoots"
       help:
         - ""
       lore:
         - ""
     left_hand:
-      name: "&6Left Hand"
+      name: "&a&lLeft Hand"
       help:
         - ""
       lore:
         - ""
     right_hand:
-      name: "&6Right hand"
+      name: "&a&lRight hand"
       help:
         - ""
       lore:
         - ""
-
   settings:
     add_001:
       name: "+0.01"
@@ -163,11 +161,11 @@ items:
     remove_1:
       name: "-1.0"
       lore:
-         - "Shift+Click: -0.001"
+        - "Shift+Click: -0.001"
       help:
         - ""
     x_value:
-      name: "x = %VALUE%"
+      name: x = %VALUE%
       lore: []
       help:
         - ""
@@ -217,14 +215,14 @@ items:
         - ""
       help:
         - ""
-
 inventories:
   main_menu: "Edit Armor Stand"
   settings: "Edit Armor Stand"
-
 msg:
   free_edit:
     cancelled: "Free edit mode was canceled!"
   edit:
     open:
       cancelled: "&4You are not allowed to Edit the ArmorStand!"
+  reload:
+    complete: "Successfully reloaded config!"

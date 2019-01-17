@@ -1,193 +1,200 @@
 items:
   none:
     toggle_button_off:
-      name: "&4Aus"
+      name: "&4inaktiv"
       help:
         - ""
       lore:
         - ""
     toggle_button_on:
-      name: "&aAn"
+      name: "&aaktiv"
       help:
         - ""
       lore:
         - ""
-
   main_menu:
     base_plate:
-      name: "&6Bodenplatte"
+      name: "&a&lBodenplatte"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     arms:
-      name: "&6Arme"
+      name: "&a&lArme"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     small_stand:
-      name: "&6Kleiner Stand"
+      name: "&a&lVerkleinert"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     no_gravity:
-      name: "&6Gravitation"
+      name: "&a&lSchwerkraft"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     invisible:
-      name: "&6Sichtbar"
+      name: "&a&lUnsichtbar"
       help:
         - ""
       lore:
-        - "<empty>"
+        - ""
     display_name:
-      name: "&6Name sichtbar"
+      name: "&a&lName Sichtbar"
       help:
         - ""
       lore:
-        - "Der Name kann mit einem Namensschild geändert werden!"
+        - "Der name kann mit einem Nametag gesetzt werden."
     rotation_left_arm:
-      name: "&6Linker Arm"
+      name: "&a&lDrehung Linker Arm"
       help:
         - ""
       lore:
         - ""
     rotation_left_leg:
-      name: "&6Linkes Bein"
+      name: "&a&lDrehung Linkes Bein"
       help:
         - ""
       lore:
         - ""
     rotation_right_arm:
-      name: "&6Rechter Arm"
+      name: "&a&lDrehung Rechter Arm"
       help:
         - ""
       lore:
         - ""
     rotation_right_leg:
-      name: "&6Rechtes Bein"
+      name: "&a&lDrehung Rechtes Bein"
       help:
         - ""
       lore:
         - ""
     rotation_body:
-      name: "&6Körper drehen"
+      name: "&a&lKörperdrehung"
       help:
         - ""
       lore:
         - ""
     rotation_head:
-      name: "&6Kopf drehen"
+      name: "&a&lKopfdrehung"
       help:
         - ""
       lore:
         - ""
     position:
-      name: "&6Position"
+      name: "&a&lPosition"
       help:
         - ""
       lore:
         - ""
     helmet:
-      name: "&6Helm"
+      name: "&a&lHelm"
       help:
         - ""
       lore:
         - ""
     chestplate:
-      name: "&6Brustplatte"
+      name: "&a&lBrustpanzer"
       help:
         - ""
       lore:
         - ""
     leggings:
-      name: "&6Hose"
+      name: "&a&lHose"
       help:
         - ""
       lore:
         - ""
     boots:
-      name: "&6Schuhe"
+      name: "&a&lSchuhe"
       help:
         - ""
       lore:
         - ""
     left_hand:
-      name: "&6Linke Hand"
+      name: "&a&lLinke Hand"
       help:
         - ""
       lore:
         - ""
     right_hand:
-      name: "&6Rechte Hand"
+      name: "&a&lRechte Hand"
       help:
         - ""
       lore:
         - ""
-
   settings:
     add_001:
       name: "+0.01"
       lore:
-        - "Shift+Click: +0.00001"
+        - "Shift+Klick: +0.00001"
       help:
         - ""
     add_01:
       name: "+0.1"
       lore:
-        - "Shift+Click: +0.0001"
+        - "Shift+Klick: +0.0001"
       help:
         - ""
     add_1:
       name: "+1.0"
       lore:
-        - "Shift+Click: +0.001"
+        - "Shift+Klick: +0.001"
       help:
         - ""
     remove_001:
       name: "-0.01"
       lore:
-        - "Shift+Click: -0.00001"
+        - "Shift+Klick: -0.00001"
       help:
         - ""
     remove_01:
       name: "-0.1"
       lore:
-        - "Shift+Click: -0.0001"
+        - "Shift+Klick: -0.0001"
       help:
         - ""
     remove_1:
       name: "-1.0"
       lore:
-         - "Shift+Click: -0.001"
+        - "Shift+Klick: -0.001"
       help:
         - ""
     x_pos:
       name: "x = %VALUE%"
-      lore:
-        - "Klick um auf 0 zu setzen"
       help:
         - ""
     y_pos:
       name: "y = %VALUE%"
-      lore:
-        - "Klick um auf 0 zu setzen"
       help:
         - ""
     z_pos:
       name: "z = %VALUE%"
-      lore:
-        - "Klick um auf 0 zu setzen"
+      help:
+        - ""
+    x_value:
+      name: "x = %VALUE%"
+      lore: []
+      help:
+        - ""
+    y_value:
+      name: "y = %VALUE%"
+      lore: []
+      help:
+        - ""
+    z_value:
+      name: "z = %VALUE%"
+      lore: []
       help:
         - ""
     yaw:
       name: "yaw = %VALUE%"
       lore:
-        - "Klick um auf 0 zu setzen"
+        - "Mit Klick auf 0 Setzen"
       help:
         - ""
     free_edit:
@@ -197,19 +204,19 @@ items:
       help:
         - ""
     back:
-      name: "Zurück"
+      name: "&a&lZurück"
       lore:
         - ""
       help:
         - ""
-
 inventories:
-  main_menu: "ArmorStand bearbeiten"
-  settings: "ArmorStand bearbeiten"
-
+  main_menu: "Rüstungsständer bearbeiten"
+  settings: "Rüstungsständer bearbeiten"
 msg:
   free_edit:
-    cancelled: "Freies Bearbeiten wurde abgebrochen!"
+    cancelled: "Freie Bearbeitung beendet"
   edit:
     open:
-      cancelled: "&4Du kannst diesen Rüstungsständer nicht bearbeiten!"
+      cancelled: "&cDu darfst diesen Rüstungsständer nicht bearbeiten!"
+  reload:
+    complete: "&aErfolgreich neu geladen!"

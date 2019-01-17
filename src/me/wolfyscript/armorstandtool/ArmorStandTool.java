@@ -13,6 +13,8 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
+import me.wolfyscript.utilities.api.utils.protection.PSUtils;
+import me.wolfyscript.utilities.api.utils.protection.WGUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,9 +31,13 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.StringUtil;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class ArmorStandTool extends JavaPlugin implements Listener {
 
@@ -96,7 +102,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                     wolfyUtilities.getInventoryAPI().openGui(player);
                     event.setCancelled(true);
                 }
-            } else if(event.getRightClicked() instanceof ArmorStand){
+            } else if(event.getRightClicked() instanceof ArmorStand && player.isSneaking()){
                 wolfyUtilities.sendPlayerMessage(event.getPlayer(), "$msg.edit.open.cancelled$");
             }
         }
@@ -154,8 +160,44 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("ast")) {
-            if (sender instanceof Player) {
+            if(args.length == 0){
+                if (sender instanceof Player) {
+                    Player p = (Player) sender;
+                    wolfyUtilities.sendPlayerMessage(p, "~*~*~*~*&6[&3&lArmorStandTool&6]&7~*~*~*~*~");
+                    wolfyUtilities.sendPlayerMessage(p, "");
+                    wolfyUtilities.sendPlayerMessage(p, "        &n     by &b&n&lWolfyScript&7&n      ");
+                    wolfyUtilities.sendPlayerMessage(p, "          ------------------");
+                    wolfyUtilities.sendPlayerMessage(p, "");
+                    wolfyUtilities.sendPlayerMessage(p, "               &nVersion:&r&b "+getDescription().getVersion());
+                    wolfyUtilities.sendPlayerMessage(p, "");
+                    wolfyUtilities.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
+                }
+            }else if(args[0].equalsIgnoreCase("reload")){
+                if(sender.hasPermission("armorstandtool.reload")){
+                    wolfyUtilities.getConfigAPI().loadConfigs();
+                    String chosenLang = wolfyUtilities.getConfigAPI().getConfig("config").getString("language");
+                    if(wolfyUtilities.getLanguageAPI().getActiveLanguage().getName().equals(chosenLang)){
+                        wolfyUtilities.getLanguageAPI().getActiveLanguage().reloadKeys();
+                    }else {
+                        wolfyUtilities.getLanguageAPI().unregisterLanguages();
+                        wolfyUtilities.getLanguageAPI().setActiveLanguage(new Language(chosenLang, new LangConfig(wolfyUtilities.getConfigAPI(), "me/wolfyscript/armorstandtool/configs/lang", chosenLang), wolfyUtilities.getConfigAPI()));
+                    }
+                    InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
+                    inventoryAPI.reset();
+                    inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
+                    inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
 
+                    inventoryAPI.registerGuiWindow(new MainMenu(inventoryAPI));
+                    inventoryAPI.registerGuiWindow(new SettingsGui(inventoryAPI));
+
+                    inventoryAPI.setMainmenu("main_menu");
+
+                    if(sender instanceof Player){
+                        wolfyUtilities.sendPlayerMessage((Player) sender, "$msg.reload.complete$");
+                    }else{
+                        wolfyUtilities.sendConsoleMessage("$msg.reload.complete$");
+                    }
+                }
             }
         }
         return true;
@@ -175,8 +217,8 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     }
 
     private boolean hasPerm(Location location, Player player) {
-        if(WolfyUtilities.hasPlotSquared() && PlotUtils.isPlotWorld(location.getWorld())){
-            if(PlotUtils.hasPerm(player, location)){
+        if(WolfyUtilities.hasPlotSquared() && PSUtils.isPlotWorld(location.getWorld())){
+            if(PSUtils.hasPerm(player, location)){
                 return true;
             }
         }else if (WolfyUtilities.hasWorldGuard()) {

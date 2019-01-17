@@ -60,7 +60,7 @@ public class MainMenu extends GuiWindow {
             event.setItem(27, "no_gravity");
             event.setItem(28, stand.hasGravity() ? "toggle_button_on" : "toggle_button_off", true);
             event.setItem(36, "invisible");
-            event.setItem(37, stand.isVisible() ? "toggle_button_on" : "toggle_button_off", true);
+            event.setItem(37, !stand.isVisible() ? "toggle_button_on" : "toggle_button_off", true);
             event.setItem(45, "display_name");
             event.setItem(46, stand.isCustomNameVisible() ? "toggle_button_on" : "toggle_button_off", true);
             event.setItem(9 + 4, "rotation_head");
