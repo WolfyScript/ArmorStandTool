@@ -47,37 +47,48 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     private static HashMap<String, ArmorStand> currentlyActive = new HashMap<>();
     private static HashMap<String, PlayerCache> playerCaches = new HashMap<>();
 
+    private static boolean enabled = false;
+
     public void onLoad() {
         instance = this;
     }
 
     public void onEnable() {
-        wolfyUtilities = new WolfyUtilities(instance);
-        ConfigAPI configAPI = wolfyUtilities.getConfigAPI();
-        LanguageAPI languageAPI = wolfyUtilities.getLanguageAPI();
-        InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
+        if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null && !Bukkit.getPluginManager().getPlugin("WolfyUtilities").getDescription().getVersion().equals("0.1.0.0")){
+            enabled = true;
+            wolfyUtilities = new WolfyUtilities(instance);
+            ConfigAPI configAPI = wolfyUtilities.getConfigAPI();
+            LanguageAPI languageAPI = wolfyUtilities.getLanguageAPI();
+            InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
 
-        wolfyUtilities.setCHAT_PREFIX("§3[§7AST§3] §7");
-        wolfyUtilities.setCONSOLE_PREFIX("[AST] ");
+            wolfyUtilities.setCHAT_PREFIX("§3[§7AST§3] §7");
+            wolfyUtilities.setCONSOLE_PREFIX("[AST] ");
 
-        configAPI.registerConfig(new Config(configAPI, "me/wolfyscript/armorstandtool/configs", getDataFolder().getPath(), "config"));
-        configAPI.getConfig("config").loadDefaults();
-        String chosenLang = configAPI.getConfig("config").getString("language");
-        languageAPI.registerLanguage(new Language(chosenLang, new LangConfig(configAPI, "me/wolfyscript/armorstandtool/configs/lang", chosenLang), configAPI));
+            configAPI.registerConfig(new Config(configAPI, "me/wolfyscript/armorstandtool/configs", getDataFolder().getPath(), "config"));
+            configAPI.getConfig("config").loadDefaults();
+            String chosenLang = configAPI.getConfig("config").getString("language");
+            languageAPI.registerLanguage(new Language(chosenLang, new LangConfig(configAPI, "me/wolfyscript/armorstandtool/configs/lang", chosenLang), configAPI));
 
-        inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
-        inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
+            inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
+            inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
 
-        inventoryAPI.registerGuiWindow(new MainMenu(inventoryAPI));
-        inventoryAPI.registerGuiWindow(new SettingsGui(inventoryAPI));
+            inventoryAPI.registerGuiWindow(new MainMenu(inventoryAPI));
+            inventoryAPI.registerGuiWindow(new SettingsGui(inventoryAPI));
 
-        inventoryAPI.setMainmenu("main_menu");
+            inventoryAPI.setMainmenu("main_menu");
 
-        Bukkit.getPluginManager().registerEvents(this, instance);
+            Bukkit.getPluginManager().registerEvents(this, instance);
+        }else{
+            Bukkit.getConsoleSender().sendMessage("You need to have the LATEST WolfyUtilities in order to run this plugin!");
+            Bukkit.getConsoleSender().sendMessage("Download here: https://www.spigotmc.org/resources/wolfyutilities.64124/");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
     }
 
     public void onDisable() {
-        wolfyUtilities.getConfigAPI().saveConfigs();
+        if(enabled){
+            wolfyUtilities.getConfigAPI().saveConfigs();
+        }
     }
 
 
@@ -122,7 +133,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof ArmorStand) {
             Player player = (Player) event.getDamager();
             PlayerCache playerCache = getPlayerCache(player);
             if (playerCache != null) {

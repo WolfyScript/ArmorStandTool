@@ -90,8 +90,8 @@ public class SettingsGui extends GuiWindow {
                 event.setItem(32, "add_01");
                 event.setItem(33, "add_1");
                 event.setItem(35, "free_edit");
-            }else{
-                for(int u = 27; u < 36; u++){
+            } else {
+                for (int u = 27; u < 36; u++) {
                     event.setItem(u, new ItemStack(Material.AIR));
                 }
             }
@@ -220,209 +220,203 @@ public class SettingsGui extends GuiWindow {
         }
     }
 
-    @EventHandler
-    public void onAction(GuiActionEvent event) {
-        if (event.verify(this)) {
-            ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
-            Location currentLocation = stand.getLocation();
+    public boolean onAction(GuiAction event) {
 
-            String action = event.getAction();
+        ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
+        Location currentLocation = stand.getLocation();
 
-            if (action.startsWith("remove_") || action.startsWith("add_")) {
-                switch (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()) {
-                    case POSITION:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            teleportStand(stand, currentLocation.add(getAmount(action, event.getClickType().isShiftClick()), 0, 0), event.getPlayer());
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            teleportStand(stand, currentLocation.add(0, getAmount(action, event.getClickType().isShiftClick()), 0), event.getPlayer());
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            teleportStand(stand, currentLocation.add(0, 0, getAmount(action, event.getClickType().isShiftClick())), event.getPlayer());
-                        }
-                        if (event.getRawSlot() >= 27 && event.getRawSlot() < 35) {
-                            currentLocation.setYaw(currentLocation.getYaw() + getAmount(action, event.getClickType().isShiftClick()));
-                            teleportStand(stand, currentLocation, event.getPlayer());
-                        }
-                        break;
-                    case ROTATION_BODY:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setBodyPose(stand.getBodyPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setBodyPose(stand.getBodyPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setBodyPose(stand.getBodyPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                    case ROTATION_HEAD:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setHeadPose(stand.getHeadPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setHeadPose(stand.getHeadPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setHeadPose(stand.getHeadPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                    case ROTATION_LEFT_ARM:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setLeftArmPose(stand.getLeftArmPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setLeftArmPose(stand.getLeftArmPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setLeftArmPose(stand.getLeftArmPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                    case ROTATION_LEFT_LEG:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setLeftLegPose(stand.getLeftLegPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setLeftLegPose(stand.getLeftLegPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setLeftLegPose(stand.getLeftLegPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                    case ROTATION_RIGHT_ARM:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setRightArmPose(stand.getRightArmPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setRightArmPose(stand.getRightArmPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setRightArmPose(stand.getRightArmPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                    case ROTATION_RIGHT_LEG:
-                        if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
-                            stand.setRightLegPose(stand.getRightLegPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
-                        }
-                        if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
-                            stand.setRightLegPose(stand.getRightLegPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
-                        }
-                        if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
-                            stand.setRightLegPose(stand.getRightLegPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
-                        }
-                        break;
-                }
-            } else if (event.getAction().equals("free_edit")) {
-                PlayerCache playerCache = ArmorStandTool.getPlayerCache(event.getPlayer());
-                switch (event.getRawSlot()) {
-                    case 8:
-                        playerCache.setFreeEdit(0);
-                        break;
-                    case 17:
-                        playerCache.setFreeEdit(1);
-                        break;
-                    case 26:
-                        playerCache.setFreeEdit(2);
-                        break;
-                    case 35:
-                        playerCache.setFreeEdit(3);
-                }
-                if (playerCache.getFreeEdit() != -1) {
-                    playerCache.setFreeEditLoc(event.getPlayer().getLocation().clone());
-                    playerCache.setFreeEditStandPos(stand.getLocation().clone());
-                    event.getGuiHandler().close();
-                }
+        String action = event.getAction();
 
-            } else if (event.getAction().endsWith("_pos")) {
-                switch (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()) {
-                    case ROTATION_RIGHT_LEG:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setRightLegPose(stand.getRightLegPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setRightLegPose(stand.getRightLegPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setRightLegPose(stand.getRightLegPose().setZ(0));
-                        }
-                        break;
-                    case ROTATION_RIGHT_ARM:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setRightArmPose(stand.getRightArmPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setRightArmPose(stand.getRightArmPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setRightArmPose(stand.getRightArmPose().setZ(0));
-                        }
-                        break;
-                    case ROTATION_LEFT_LEG:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setLeftLegPose(stand.getLeftLegPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setLeftLegPose(stand.getLeftLegPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setLeftLegPose(stand.getLeftLegPose().setZ(0));
-                        }
-                        break;
-                    case ROTATION_LEFT_ARM:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setLeftArmPose(stand.getLeftArmPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setLeftArmPose(stand.getLeftArmPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setLeftArmPose(stand.getLeftArmPose().setZ(0));
-                        }
-                        break;
-                    case ROTATION_HEAD:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setHeadPose(stand.getHeadPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setHeadPose(stand.getHeadPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setHeadPose(stand.getHeadPose().setZ(0));
-                        }
-                        break;
-                    case ROTATION_BODY:
-                        switch (action) {
-                            case "x_pos":
-                                stand.setBodyPose(stand.getBodyPose().setX(0));
-                                break;
-                            case "y_pos":
-                                stand.setBodyPose(stand.getBodyPose().setY(0));
-                                break;
-                            case "z_pos":
-                                stand.setBodyPose(stand.getBodyPose().setZ(0));
-                        }
-                }
-            } else if (action.equals("yaw")) {
-                stand.getLocation().setYaw(0);
-            } else if (event.getAction().equals("back")) {
-                event.getGuiHandler().openLastInv();
+        if (action.startsWith("remove_") || action.startsWith("add_")) {
+            switch (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()) {
+                case POSITION:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        teleportStand(stand, currentLocation.add(getAmount(action, event.getClickType().isShiftClick()), 0, 0), event.getPlayer());
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        teleportStand(stand, currentLocation.add(0, getAmount(action, event.getClickType().isShiftClick()), 0), event.getPlayer());
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        teleportStand(stand, currentLocation.add(0, 0, getAmount(action, event.getClickType().isShiftClick())), event.getPlayer());
+                    }
+                    if (event.getRawSlot() >= 27 && event.getRawSlot() < 35) {
+                        currentLocation.setYaw(currentLocation.getYaw() + getAmount(action, event.getClickType().isShiftClick()));
+                        teleportStand(stand, currentLocation, event.getPlayer());
+                    }
+                    break;
+                case ROTATION_BODY:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setBodyPose(stand.getBodyPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setBodyPose(stand.getBodyPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setBodyPose(stand.getBodyPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
+                case ROTATION_HEAD:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setHeadPose(stand.getHeadPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setHeadPose(stand.getHeadPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setHeadPose(stand.getHeadPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
+                case ROTATION_LEFT_ARM:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setLeftArmPose(stand.getLeftArmPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setLeftArmPose(stand.getLeftArmPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setLeftArmPose(stand.getLeftArmPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
+                case ROTATION_LEFT_LEG:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setLeftLegPose(stand.getLeftLegPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setLeftLegPose(stand.getLeftLegPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setLeftLegPose(stand.getLeftLegPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
+                case ROTATION_RIGHT_ARM:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setRightArmPose(stand.getRightArmPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setRightArmPose(stand.getRightArmPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setRightArmPose(stand.getRightArmPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
+                case ROTATION_RIGHT_LEG:
+                    if (event.getRawSlot() >= 0 && event.getRawSlot() < 8) {
+                        stand.setRightLegPose(stand.getRightLegPose().add(getAmount(event.getAction(), event.getClickType().isShiftClick()), 0, 0));
+                    }
+                    if (event.getRawSlot() >= 9 && event.getRawSlot() < 17) {
+                        stand.setRightLegPose(stand.getRightLegPose().add(0, getAmount(event.getAction(), event.getClickType().isShiftClick()), 0));
+                    }
+                    if (event.getRawSlot() >= 18 && event.getRawSlot() < 26) {
+                        stand.setRightLegPose(stand.getRightLegPose().add(0, 0, getAmount(event.getAction(), event.getClickType().isShiftClick())));
+                    }
+                    break;
             }
-            update(event.getGuiHandler());
+        } else if (event.getAction().equals("free_edit")) {
+            PlayerCache playerCache = ArmorStandTool.getPlayerCache(event.getPlayer());
+            switch (event.getRawSlot()) {
+                case 8:
+                    playerCache.setFreeEdit(0);
+                    break;
+                case 17:
+                    playerCache.setFreeEdit(1);
+                    break;
+                case 26:
+                    playerCache.setFreeEdit(2);
+                    break;
+                case 35:
+                    playerCache.setFreeEdit(3);
+            }
+            if (playerCache.getFreeEdit() != -1) {
+                playerCache.setFreeEditLoc(event.getPlayer().getLocation().clone());
+                playerCache.setFreeEditStandPos(stand.getLocation().clone());
+                event.getGuiHandler().close();
+            }
+
+        } else if (event.getAction().endsWith("_pos")) {
+            switch (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption()) {
+                case ROTATION_RIGHT_LEG:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setRightLegPose(stand.getRightLegPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setRightLegPose(stand.getRightLegPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setRightLegPose(stand.getRightLegPose().setZ(0));
+                    }
+                    break;
+                case ROTATION_RIGHT_ARM:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setRightArmPose(stand.getRightArmPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setRightArmPose(stand.getRightArmPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setRightArmPose(stand.getRightArmPose().setZ(0));
+                    }
+                    break;
+                case ROTATION_LEFT_LEG:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setLeftLegPose(stand.getLeftLegPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setLeftLegPose(stand.getLeftLegPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setLeftLegPose(stand.getLeftLegPose().setZ(0));
+                    }
+                    break;
+                case ROTATION_LEFT_ARM:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setLeftArmPose(stand.getLeftArmPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setLeftArmPose(stand.getLeftArmPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setLeftArmPose(stand.getLeftArmPose().setZ(0));
+                    }
+                    break;
+                case ROTATION_HEAD:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setHeadPose(stand.getHeadPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setHeadPose(stand.getHeadPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setHeadPose(stand.getHeadPose().setZ(0));
+                    }
+                    break;
+                case ROTATION_BODY:
+                    switch (action) {
+                        case "x_pos":
+                            stand.setBodyPose(stand.getBodyPose().setX(0));
+                            break;
+                        case "y_pos":
+                            stand.setBodyPose(stand.getBodyPose().setY(0));
+                            break;
+                        case "z_pos":
+                            stand.setBodyPose(stand.getBodyPose().setZ(0));
+                    }
+            }
+        } else if (action.equals("yaw")) {
+            stand.getLocation().setYaw(0);
+        } else if (event.getAction().equals("back")) {
+            event.getGuiHandler().openLastInv();
         }
+        update(event.getGuiHandler());
+        return true;
     }
 
-    @EventHandler
-    public void onClick(GuiClickEvent event) {
-        if (event.verify(this)) {
-            if (event.getClickType().isShiftClick()) {
-                event.setCancelled(true);
-            }
-        }
+    public boolean onClick(GuiClick event) {
+        return event.getClickType().isShiftClick();
     }
 
     public static float getAmount(String text, boolean shift) {

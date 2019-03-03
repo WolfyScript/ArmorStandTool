@@ -87,72 +87,66 @@ public class MainMenu extends GuiWindow {
         }
     }
 
-    @EventHandler
-    public void onAction(GuiActionEvent event) {
-        if (event.verify(this)) {
-            if (event.getAction().startsWith("rotation_") || event.getAction().equals("position")) {
-                ArmorStandTool.getPlayerCache(event.getPlayer()).setCurrentOption(OptionType.valueOf(event.getAction().toUpperCase()));
-                event.getGuiHandler().changeToInv("settings");
-            } else if (event.getAction().startsWith("toggle_button_")) {
-                ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
-                switch(event.getClickedSlot()){
-                    case 1:
-                        stand.setBasePlate(!stand.hasBasePlate());
-                        break;
-                    case 10:
-                        stand.setArms(!stand.hasArms());
-                        break;
-                    case 19:
-                        stand.setSmall(!stand.isSmall());
-                        break;
-                    case 28:
-                        stand.setGravity(!stand.hasGravity());
-                        break;
-                    case 37:
-                        if(!stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)){
-                            stand.setVisible(!stand.isVisible());
-                        }
-                        break;
-                    case 46:
-                        stand.setCustomNameVisible(!stand.isCustomNameVisible());
-                        break;
-                }
-                update(event.getGuiHandler());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onClick(GuiClickEvent event) {
-        if (event.verify(this)) {
+    public boolean onAction(GuiAction event) {
+        if (event.getAction().startsWith("rotation_") || event.getAction().equals("position")) {
+            ArmorStandTool.getPlayerCache(event.getPlayer()).setCurrentOption(OptionType.valueOf(event.getAction().toUpperCase()));
+            event.getGuiHandler().changeToInv("settings");
+        } else if (event.getAction().startsWith("toggle_button_")) {
             ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
-            if(event.getClickedInventory().equals(event.getPlayer().getOpenInventory().getTopInventory())){
-                int slot = event.getRawSlot();
-                if(slot != 8 && slot != 17 && slot != 26 && slot != 35 && slot != 44 && slot != 53){
-                    event.setCancelled(true);
-                }
-                Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () ->{
-                    stand.setHelmet(event.getClickedInventory().getItem(8));
-                    stand.setChestplate(event.getClickedInventory().getItem(17));
-                    stand.setLeggings(event.getClickedInventory().getItem(26));
-                    stand.setBoots(event.getClickedInventory().getItem(35));
-                    stand.getEquipment().setItemInOffHand(event.getClickedInventory().getItem(44));
-                    stand.getEquipment().setItemInMainHand(event.getClickedInventory().getItem(53));
-                }, 1);
-            }else{
-                if(event.getClickType().isShiftClick()){
-                    event.setCancelled(true);
-                }
+            switch (event.getClickedSlot()) {
+                case 1:
+                    stand.setBasePlate(!stand.hasBasePlate());
+                    break;
+                case 10:
+                    stand.setArms(!stand.hasArms());
+                    break;
+                case 19:
+                    stand.setSmall(!stand.isSmall());
+                    break;
+                case 28:
+                    stand.setGravity(!stand.hasGravity());
+                    break;
+                case 37:
+                    if (!stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)) {
+                        stand.setVisible(!stand.isVisible());
+                    }
+                    break;
+                case 46:
+                    stand.setCustomNameVisible(!stand.isCustomNameVisible());
+                    break;
             }
+            update(event.getGuiHandler());
         }
+        return true;
+    }
+
+    public boolean onClick(GuiClick event) {
+        ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
+        if (event.getClickedInventory().equals(event.getPlayer().getOpenInventory().getTopInventory())) {
+            int slot = event.getRawSlot();
+            if (slot != 8 && slot != 17 && slot != 26 && slot != 35 && slot != 44 && slot != 53) {
+                return true;
+            }
+            Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () -> {
+                stand.setHelmet(event.getClickedInventory().getItem(8));
+                stand.setChestplate(event.getClickedInventory().getItem(17));
+                stand.setLeggings(event.getClickedInventory().getItem(26));
+                stand.setBoots(event.getClickedInventory().getItem(35));
+                stand.getEquipment().setItemInOffHand(event.getClickedInventory().getItem(44));
+                stand.getEquipment().setItemInMainHand(event.getClickedInventory().getItem(53));
+            }, 1);
+        } else {
+            return event.getClickType().isShiftClick();
+        }
+        return false;
     }
 
     @EventHandler
-    public void onDrag(GuiItemDragEvent event){
-        if(event.verify(this)){
+    public void onDrag(GuiItemDragEvent event) {
+        if (event.verify(this)) {
             ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
             Inventory inventory = event.getView().getTopInventory();
-            Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () ->{
+            Bukkit.getScheduler().runTaskLater(event.getWolfyUtilities().getPlugin(), () -> {
                 stand.setHelmet(event.getView().getItem(8));
                 stand.setChestplate(inventory.getItem(17));
                 stand.setLeggings(inventory.getItem(26));
