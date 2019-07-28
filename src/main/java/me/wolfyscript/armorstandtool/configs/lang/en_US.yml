@@ -42,7 +42,8 @@ items:
       help:
         - ""
       lore:
-        - ""
+        - "Place an item in any Equipment slot"
+        - "to make it invisible"
     display_name:
       name: "&a&lDisplay name visible"
       help:
@@ -165,7 +166,7 @@ items:
       help:
         - ""
     x_value:
-      name: x = %VALUE%
+      name: "x = %VALUE%"
       lore: []
       help:
         - ""

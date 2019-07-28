@@ -2,19 +2,13 @@ package me.wolfyscript.armorstandtool.guis;
 
 import me.wolfyscript.armorstandtool.ArmorStandTool;
 import me.wolfyscript.armorstandtool.data.OptionType;
-import me.wolfyscript.armorstandtool.data.PlayerCache;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.awt.*;
-import java.util.HashMap;
 
 public class MainMenu extends GuiWindow {
 
@@ -107,8 +101,10 @@ public class MainMenu extends GuiWindow {
                     stand.setGravity(!stand.hasGravity());
                     break;
                 case 37:
-                    if (!stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)) {
-                        stand.setVisible(!stand.isVisible());
+                    if ((stand.getEquipment() != null && (!stand.getEquipment().getItemInMainHand().getType().equals(Material.AIR) || !stand.getEquipment().getItemInOffHand().getType().equals(Material.AIR))) || !stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)) {
+                        if(WolfyUtilities.hasPermission(event.getPlayer(), "armorstandtool.edit.invisible")){
+                            stand.setVisible(!stand.isVisible());
+                        }
                     }
                     break;
                 case 46:

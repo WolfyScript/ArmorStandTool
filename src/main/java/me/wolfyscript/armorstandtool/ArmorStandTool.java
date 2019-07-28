@@ -1,6 +1,6 @@
 package me.wolfyscript.armorstandtool;
 
-import com.griefcraft.lwc.LWC;
+import me.wolfyscript.armorstandtool.configs.ArmorStandToolConfig;
 import me.wolfyscript.armorstandtool.data.OptionType;
 import me.wolfyscript.armorstandtool.data.PlayerCache;
 import me.wolfyscript.armorstandtool.guis.MainMenu;
@@ -8,7 +8,7 @@ import me.wolfyscript.armorstandtool.guis.SettingsGui;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.config.templates.LangConfig;
+import me.wolfyscript.utilities.api.config.templates.LangConfiguration;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
@@ -26,23 +26,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.StringUtil;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 public class ArmorStandTool extends JavaPlugin implements Listener {
 
     private static ArmorStandTool instance;
     private static WolfyUtilities wolfyUtilities;
+    private static ArmorStandToolConfig config;
 
     private static HashMap<String, ArmorStand> currentlyActive = new HashMap<>();
     private static HashMap<String, PlayerCache> playerCaches = new HashMap<>();
@@ -64,10 +61,19 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             wolfyUtilities.setCHAT_PREFIX("§3[§7AST§3] §7");
             wolfyUtilities.setCONSOLE_PREFIX("[AST] ");
 
-            configAPI.registerConfig(new Config(configAPI, "me/wolfyscript/armorstandtool/configs", getDataFolder().getPath(), "config"));
-            configAPI.getConfig("config").loadDefaults();
-            String chosenLang = configAPI.getConfig("config").getString("language");
-            languageAPI.registerLanguage(new Language(chosenLang, new LangConfig(configAPI, "me/wolfyscript/armorstandtool/configs/lang", chosenLang), configAPI));
+            config = new ArmorStandToolConfig(configAPI);
+            configAPI.registerConfig(config);
+            config.loadDefaults();
+
+            String lang = config.getLang();
+            Config langConf;
+            if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".yml") != null) {
+                langConf = new LangConfiguration(configAPI, lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+            } else {
+                langConf = new LangConfiguration(configAPI, "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+            }
+            langConf.loadDefaults();
+            languageAPI.registerLanguage(new Language(lang, langConf, configAPI));
 
             inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
             inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
@@ -78,11 +84,13 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             inventoryAPI.setMainmenu("main_menu");
 
             Bukkit.getPluginManager().registerEvents(this, instance);
+
         }else{
             Bukkit.getConsoleSender().sendMessage("You need to have the LATEST WolfyUtilities in order to run this plugin!");
             Bukkit.getConsoleSender().sendMessage("Download here: https://www.spigotmc.org/resources/wolfyutilities.64124/");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        Metrics metrics = new Metrics(this);
     }
 
     public void onDisable() {
@@ -142,7 +150,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                     wolfyUtilities.sendPlayerMessage(player, "$msg.free_edit.cancelled$");
                     playerCache.setFreeEditLoc(null);
                     playerCache.setFreeEdit(-1);
-                }else if(wolfyUtilities.getConfigAPI().getConfig("config").getBoolean("block_armorstand-knockback")){
+                }else if(config.blockArmorStandKnockback()){
                     Location loc = event.getEntity().getLocation();
                     Bukkit.getScheduler().runTaskLater(this, () -> {
                         event.getEntity().setVelocity(new Vector(0,0,0));
@@ -186,12 +194,20 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             }else if(args[0].equalsIgnoreCase("reload")){
                 if(sender.hasPermission("armorstandtool.reload")){
                     wolfyUtilities.getConfigAPI().loadConfigs();
-                    String chosenLang = wolfyUtilities.getConfigAPI().getConfig("config").getString("language");
-                    if(wolfyUtilities.getLanguageAPI().getActiveLanguage().getName().equals(chosenLang)){
+                    String lang = config.getLang();
+
+                    if(wolfyUtilities.getLanguageAPI().getActiveLanguage().getName().equals(lang)){
                         wolfyUtilities.getLanguageAPI().getActiveLanguage().reloadKeys();
                     }else {
                         wolfyUtilities.getLanguageAPI().unregisterLanguages();
-                        wolfyUtilities.getLanguageAPI().setActiveLanguage(new Language(chosenLang, new LangConfig(wolfyUtilities.getConfigAPI(), "me/wolfyscript/armorstandtool/configs/lang", chosenLang), wolfyUtilities.getConfigAPI()));
+                        Config langConf;
+                        if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".yml") != null) {
+                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+                        } else {
+                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+                        }
+                        langConf.loadDefaults();
+                        wolfyUtilities.getLanguageAPI().setActiveLanguage(new Language(lang, langConf, wolfyUtilities.getConfigAPI()));
                     }
                     InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
                     inventoryAPI.reset();
@@ -238,5 +254,9 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             return true;
         }
         return false;
+    }
+
+    public static WolfyUtilities getAPI() {
+        return wolfyUtilities;
     }
 }
