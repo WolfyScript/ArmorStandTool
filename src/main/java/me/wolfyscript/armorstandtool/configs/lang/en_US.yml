@@ -130,21 +130,21 @@ items:
         - ""
   settings:
     add_001:
-      name: "+0.01"
+      name: "0.01"
       lore:
-        - "Shift+Click: +0.00001"
+        - "Shift+Click: 0.00001"
       help:
         - ""
     add_01:
-      name: "+0.1"
+      name: "0.1"
       lore:
-        - "Shift+Click: +0.0001"
+        - "Shift+Click: 0.0001"
       help:
         - ""
     add_1:
-      name: "+1.0"
+      name: "1.0"
       lore:
-        - "Shift+Click: +0.001"
+        - "Shift+Click: 0.001"
       help:
         - ""
     remove_001:

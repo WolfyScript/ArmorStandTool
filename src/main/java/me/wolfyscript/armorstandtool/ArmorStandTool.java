@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.templates.LangConfiguration;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
@@ -67,21 +68,17 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
 
             String lang = config.getLang();
             Config langConf;
-            if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".yml") != null) {
-                langConf = new LangConfiguration(configAPI, lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+            if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".json") != null) {
+                langConf = new LangConfiguration(configAPI, lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
             } else {
-                langConf = new LangConfiguration(configAPI, "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+                langConf = new LangConfiguration(configAPI, "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
             }
             langConf.loadDefaults();
             languageAPI.registerLanguage(new Language(lang, langConf, configAPI));
 
-            inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
-            inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
-
-            inventoryAPI.registerGuiWindow(new MainMenu(inventoryAPI));
-            inventoryAPI.registerGuiWindow(new SettingsGui(inventoryAPI));
-
-            inventoryAPI.setMainmenu("main_menu");
+            GuiCluster mainCluster = inventoryAPI.getOrRegisterGuiCluster("main");
+            mainCluster.registerGuiWindow(new MainMenu(inventoryAPI));
+            mainCluster.registerGuiWindow(new SettingsGui(inventoryAPI));
 
             Bukkit.getPluginManager().registerEvents(this, instance);
 
@@ -118,7 +115,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                 if (player.isSneaking()) {
                     getPlayerCache(player).setArmorStand((ArmorStand) event.getRightClicked());
                     currentlyActive.put(player.getUniqueId().toString(), (ArmorStand) event.getRightClicked());
-                    wolfyUtilities.getInventoryAPI().openGui(player);
+                    wolfyUtilities.getInventoryAPI().openCluster(player, "main");
                     event.setCancelled(true);
                 }
             } else if(event.getRightClicked() instanceof ArmorStand && player.isSneaking()){
@@ -201,23 +198,20 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                     }else {
                         wolfyUtilities.getLanguageAPI().unregisterLanguages();
                         Config langConf;
-                        if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".yml") != null) {
-                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+                        if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".json") != null) {
+                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
                         } else {
-                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "yml", false);
+                            langConf = new LangConfiguration(wolfyUtilities.getConfigAPI(), "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
                         }
                         langConf.loadDefaults();
                         wolfyUtilities.getLanguageAPI().setActiveLanguage(new Language(lang, langConf, wolfyUtilities.getConfigAPI()));
                     }
                     InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
                     inventoryAPI.reset();
-                    inventoryAPI.registerItem("none", "toggle_button_off", new ItemStack(Material.ROSE_RED));
-                    inventoryAPI.registerItem("none", "toggle_button_on", new ItemStack(Material.LIME_DYE));
 
-                    inventoryAPI.registerGuiWindow(new MainMenu(inventoryAPI));
-                    inventoryAPI.registerGuiWindow(new SettingsGui(inventoryAPI));
-
-                    inventoryAPI.setMainmenu("main_menu");
+                    GuiCluster mainCluster = inventoryAPI.getOrRegisterGuiCluster("main");
+                    mainCluster.registerGuiWindow(new MainMenu(inventoryAPI));
+                    mainCluster.registerGuiWindow(new SettingsGui(inventoryAPI));
 
                     if(sender instanceof Player){
                         wolfyUtilities.sendPlayerMessage((Player) sender, "$msg.reload.complete$");

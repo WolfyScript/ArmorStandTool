@@ -1,0 +1,189 @@
+{
+  "inventories": {
+    "main": {
+      "main_menu": {
+        "gui_name": "Edit Armor Stand",
+        "items": {
+          "base_plate": {
+            "name": "&a&lBase plate",
+            "lore": [
+            ]
+          },
+          "arms": {
+            "name": "&a&lArms visible",
+            "lore": [
+            ]
+          },
+          "small_stand": {
+            "name": "&a&lSmall Model",
+            "lore": [
+            ]
+          },
+          "no_gravity": {
+            "name": "&a&lGravity",
+            "lore": [
+            ]
+          },
+          "invisible": {
+            "name": "&a&lInvisible",
+            "lore": [
+              "Place an item in any Equipment slot",
+              "to make it invisible"
+            ]
+          },
+          "display_name": {
+            "name": "&a&lDisplay name visible",
+            "lore": [
+              "The name can be set with a name tag."
+            ]
+          },
+          "toggle_button": {
+            "enabled": {
+              "name": "&aOn",
+              "lore": [
+              ]
+            },
+            "disabled": {
+              "name": "&4Off",
+              "lore": [
+              ]
+            }
+          },
+          "rotation_left_arm": {
+            "name": "&a&lRotate Left Arm",
+            "lore": [
+            ]
+          },
+          "rotation_left_leg": {
+            "name": "&a&lRotate Left Leg",
+            "lore": [
+            ]
+          },
+          "rotation_right_arm": {
+            "name": "&a&lRotate Right Arm",
+            "lore": [
+            ]
+          },
+          "rotation_right_leg": {
+            "name": "&a&lRotate Right Leg",
+            "lore": [
+            ]
+          },
+          "rotation_body": {
+            "name": "&a&lRotate Body",
+            "lore": [
+            ]
+          },
+          "rotation_head": {
+            "name": "&a&lRotate Head",
+            "lore": [
+            ]
+          },
+          "position": {
+            "name": "&a&lPosition",
+            "lore": [
+            ]
+          },
+          "helmet": {
+            "name": "&a&lHelmet",
+            "lore": [
+            ]
+          },
+          "chestplate": {
+            "name": "&a&lChestplate",
+            "lore": [
+            ]
+          },
+          "leggings": {
+            "name": "&a&lLeggings",
+            "lore": [
+            ]
+          },
+          "boots": {
+            "name": "&a&lBoots",
+            "lore": [
+            ]
+          },
+          "left_hand": {
+            "name": "&a&lLeft Hand",
+            "lore": [
+            ]
+          },
+          "right_hand": {
+            "name": "&a&lRight hand",
+            "lore": [
+            ]
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "Edit Armor Stand",
+        "items": {
+          "value": {
+            "name": "%var%",
+            "lore": [
+              "Shift+Click: %var_shift%"
+            ]
+          },
+          "locations": {
+            "x": {
+              "name": "x = %value%",
+              "lore": [
+              ]
+            },
+            "y": {
+              "name": "y = %value%",
+              "lore": [
+              ]
+            },
+            "z": {
+              "name": "z = %value%",
+              "lore": [
+              ]
+            }
+          },
+          "pose": {
+            "x": {
+              "name": "x = %value%"
+            },
+            "y": {
+              "name": "y = %value%"
+            },
+            "z": {
+              "name": "z = %value%"
+            }
+          },
+          "yaw": {
+            "name": "yaw = %value%",
+            "lore": [
+              "Click to set to 0"
+            ]
+          },
+          "free_edit": {
+            "name": "Free edit",
+            "lore": [
+            ]
+          },
+          "back": {
+            "name": "Back",
+            "lore": [
+            ]
+          }
+        }
+      }
+    }
+  },
+  "msg":{
+    "free_edit": {
+      "cancelled": "Free edit mode was canceled!"
+    },
+    "edit": {
+      "open": {
+        "cancelled": "&4You are not allowed to Edit the ArmorStand!"
+      }
+    },
+    "reload": {
+      "complete": "Successfully reloaded config!"
+    }
+  }
+}
