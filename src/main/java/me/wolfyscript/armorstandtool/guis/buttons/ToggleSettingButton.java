@@ -12,7 +12,7 @@ public class ToggleSettingButton extends ToggleButton {
         super("toggle_button_"+id, new ButtonState("toggle_button.enabled", Material.LIME_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             MainMenu.toggleStandSettings(i, player);
             return true;
-        }), new ButtonState("toggle_button.disabled", Material.ROSE_RED, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("toggle_button.disabled", Material.RED_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             MainMenu.toggleStandSettings(i, player);
             return true;
         }));

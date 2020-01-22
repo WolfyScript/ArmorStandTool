@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class PoseResetButton extends ActionButton {
 
     public PoseResetButton(String xyz) {
-        super("pose_"+xyz, new ButtonState("pose."+xyz, Material.DANDELION_YELLOW, new ButtonActionRender() {
+        super("pose_"+xyz, new ButtonState("pose."+xyz, Material.YELLOW_DYE, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
                 ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();

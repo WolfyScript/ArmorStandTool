@@ -8,6 +8,7 @@ import me.wolfyscript.armorstandtool.guis.SettingsGui;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.config.templates.LangConfiguration;
 import me.wolfyscript.utilities.api.inventory.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -16,9 +17,9 @@ import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.utils.protection.PSUtils;
 import me.wolfyscript.utilities.api.utils.protection.WGUtils;
+import org.apache.commons.io.FileExistsException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
@@ -30,10 +31,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.FileUtil;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class ArmorStandTool extends JavaPlugin implements Listener {
@@ -54,7 +56,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     public void onEnable() {
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null && !Bukkit.getPluginManager().getPlugin("WolfyUtilities").getDescription().getVersion().equals("0.1.0.0")){
             enabled = true;
-            wolfyUtilities = new WolfyUtilities(instance);
+            wolfyUtilities = WolfyUtilities.getOrCreateAPI(instance);
             ConfigAPI configAPI = wolfyUtilities.getConfigAPI();
             LanguageAPI languageAPI = wolfyUtilities.getLanguageAPI();
             InventoryAPI inventoryAPI = wolfyUtilities.getInventoryAPI();
@@ -67,11 +69,11 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             config.loadDefaults();
 
             String lang = config.getLang();
-            Config langConf;
+            JsonConfiguration langConf;
             if (ArmorStandTool.getInstance().getResource("me/wolfyscript/armorstandtool/configs/lang/" + lang + ".json") != null) {
-                langConf = new LangConfiguration(configAPI, lang, "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
+                langConf = new JsonConfiguration(configAPI, getDataFolder() + File.pathSeparator+"lang", lang, "me/wolfyscript/armorstandtool/configs/lang", lang, true);
             } else {
-                langConf = new LangConfiguration(configAPI, "en_US", "me/wolfyscript/armorstandtool/configs/lang", lang, "json", false);
+                langConf = new JsonConfiguration(configAPI, getDataFolder() + File.pathSeparator+"lang", lang, "me/wolfyscript/armorstandtool/configs/lang", "en_US", false);
             }
             langConf.loadDefaults();
             languageAPI.registerLanguage(new Language(lang, langConf, configAPI));
@@ -147,7 +149,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                     wolfyUtilities.sendPlayerMessage(player, "$msg.free_edit.cancelled$");
                     playerCache.setFreeEditLoc(null);
                     playerCache.setFreeEdit(-1);
-                }else if(config.blockArmorStandKnockback()){
+                }else if(!config.armorStandKnockback()){
                     Location loc = event.getEntity().getLocation();
                     Bukkit.getScheduler().runTaskLater(this, () -> {
                         event.getEntity().setVelocity(new Vector(0,0,0));

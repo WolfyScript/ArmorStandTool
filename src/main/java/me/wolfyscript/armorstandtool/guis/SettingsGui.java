@@ -34,13 +34,13 @@ public class SettingsGui extends GuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ValueEditButton(0.01f, Material.CACTUS_GREEN));
-        registerButton(new ValueEditButton(0.1f, Material.CACTUS_GREEN));
-        registerButton(new ValueEditButton(1.0f, Material.CACTUS_GREEN));
+        registerButton(new ValueEditButton(0.01f, Material.GREEN_DYE));
+        registerButton(new ValueEditButton(0.1f, Material.GREEN_DYE));
+        registerButton(new ValueEditButton(1.0f, Material.GREEN_DYE));
 
-        registerButton(new ValueEditButton(-0.01f, Material.ROSE_RED));
-        registerButton(new ValueEditButton(-0.1f, Material.ROSE_RED));
-        registerButton(new ValueEditButton(-1.0f, Material.ROSE_RED));
+        registerButton(new ValueEditButton(-0.01f, Material.RED_DYE));
+        registerButton(new ValueEditButton(-0.1f, Material.RED_DYE));
+        registerButton(new ValueEditButton(-1.0f, Material.RED_DYE));
 
         registerButton(new ValueDisplayButton("x"));
         registerButton(new ValueDisplayButton("y"));
@@ -50,7 +50,7 @@ public class SettingsGui extends GuiWindow {
         registerButton(new PoseResetButton("y"));
         registerButton(new PoseResetButton("z"));
 
-        registerButton(new ActionButton("yaw", new ButtonState("yaw", Material.DANDELION_YELLOW, new ButtonActionRender() {
+        registerButton(new ActionButton("yaw", new ButtonState("yaw", Material.YELLOW_DYE, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
                 ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
@@ -154,7 +154,7 @@ public class SettingsGui extends GuiWindow {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (event.getTo().distance(event.getFrom()) > 0) {
+        if (event.getTo() != null && event.getTo().distance(event.getFrom()) > 0) {
             PlayerCache playerCache = ArmorStandTool.getPlayerCache(event.getPlayer());
             int mode = playerCache.getFreeEdit();
             if (mode != -1) {
