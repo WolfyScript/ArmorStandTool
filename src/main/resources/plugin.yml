@@ -1,6 +1,6 @@
 name: ArmorStandTool
 api-version: 1.13
-version: 1.5.0.0
+version: ${project.version}
 author: WolfyScript
 depend:
   - WolfyUtilities
