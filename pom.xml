@@ -6,7 +6,7 @@
 
     <groupId>WolfyScript</groupId>
     <artifactId>ArmorStandTool</artifactId>
-    <version>1.3.0.0</version>
+    <version>1.6.0.0</version>
 
     <properties>
         <!-- Generic properties -->
@@ -17,16 +17,21 @@
 
     <repositories>
         <repository>
-            <id>brokko-repo</id>
-            <url>https://www.iani.de/nexus/content/groups/public</url>
+            <id>wolfyscript-public</id>
+            <url>https://maven.wolfyscript.com/repository/public/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>io.github.wolfyscript</groupId>
+            <groupId>com.wolfyscript</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.5.1.0</version>
+            <version>1.6.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
         </dependency>
     </dependencies>
 
@@ -41,7 +46,7 @@
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
                 <includes>
-                    <include>*</include>
+                    <include>**/*</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
