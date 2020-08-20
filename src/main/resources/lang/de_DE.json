@@ -1,0 +1,189 @@
+{
+  "inventories": {
+    "main": {
+      "main_menu": {
+        "gui_name": "Rüstungsständer bearbeiten",
+        "items": {
+          "base_plate": {
+            "name": "&a&lBodenplatte",
+            "lore": [
+            ]
+          },
+          "arms": {
+            "name": "&a&lArme",
+            "lore": [
+            ]
+          },
+          "small_stand": {
+            "name": "&a&lKleines Model",
+            "lore": [
+            ]
+          },
+          "no_gravity": {
+            "name": "&a&lSchwerkraft",
+            "lore": [
+            ]
+          },
+          "invisible": {
+            "name": "&a&lUnsichtbar",
+            "lore": [
+              "Plaziere ein Item in irgendein Ausrüstungsplatz",
+              "um ihn unsichtbar zu machen"
+            ]
+          },
+          "display_name": {
+            "name": "&a&lName Sichtbar",
+            "lore": [
+              "Der name kann mit einem Nametag gesetzt werden."
+            ]
+          },
+          "toggle_button": {
+            "enabled": {
+              "name": "&aAktiv",
+              "lore": [
+              ]
+            },
+            "disabled": {
+              "name": "&4Inaktiv",
+              "lore": [
+              ]
+            }
+          },
+          "rotation_left_arm": {
+            "name": "&a&lDrehung Linker Arm",
+            "lore": [
+            ]
+          },
+          "rotation_left_leg": {
+            "name": "&a&lDrehung Linkes Bein",
+            "lore": [
+            ]
+          },
+          "rotation_right_arm": {
+            "name": "&a&lDrehung Rechter Arm",
+            "lore": [
+            ]
+          },
+          "rotation_right_leg": {
+            "name": "&a&lDrehung Rechtes Bein",
+            "lore": [
+            ]
+          },
+          "rotation_body": {
+            "name": "&a&lKörperdrehung",
+            "lore": [
+            ]
+          },
+          "rotation_head": {
+            "name": "&a&lKopfdrehung",
+            "lore": [
+            ]
+          },
+          "position": {
+            "name": "&a&lPosition",
+            "lore": [
+            ]
+          },
+          "helmet": {
+            "name": "&a&lHelm",
+            "lore": [
+            ]
+          },
+          "chestplate": {
+            "name": "&a&lBrustpanzer",
+            "lore": [
+            ]
+          },
+          "leggings": {
+            "name": "&a&lHose",
+            "lore": [
+            ]
+          },
+          "boots": {
+            "name": "&a&lSchuhe",
+            "lore": [
+            ]
+          },
+          "left_hand": {
+            "name": "&a&lLinke Hand",
+            "lore": [
+            ]
+          },
+          "right_hand": {
+            "name": "&a&lRechte Hand",
+            "lore": [
+            ]
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "Rüstungsständer bearbeiten",
+        "items": {
+          "value": {
+            "name": "%var%",
+            "lore": [
+              "Shift+Klick: %var_shift%"
+            ]
+          },
+          "locations": {
+            "x": {
+              "name": "x = %value%",
+              "lore": [
+              ]
+            },
+            "y": {
+              "name": "y = %value%",
+              "lore": [
+              ]
+            },
+            "z": {
+              "name": "z = %value%",
+              "lore": [
+              ]
+            }
+          },
+          "pose": {
+            "x": {
+              "name": "x = %value%"
+            },
+            "y": {
+              "name": "y = %value%"
+            },
+            "z": {
+              "name": "z = %value%"
+            }
+          },
+          "yaw": {
+            "name": "yaw = %value%",
+            "lore": [
+              "Auf 0 setzen"
+            ]
+          },
+          "free_edit": {
+            "name": "Freies Bearbeiten",
+            "lore": [
+            ]
+          },
+          "back": {
+            "name": "&a&lZurück",
+            "lore": [
+            ]
+          }
+        }
+      }
+    }
+  },
+  "msg":{
+    "free_edit": {
+      "cancelled": "Freie Bearbeitung beendet!"
+    },
+    "edit": {
+      "open": {
+        "cancelled": "&cDu darfst diesen Rüstungsständer nicht bearbeiten!"
+      }
+    },
+    "reload": {
+      "complete": "&aErfolgreich neu geladen!"
+    }
+  }
+}
