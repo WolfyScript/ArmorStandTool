@@ -13,6 +13,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMenu extends GuiWindow {
 
@@ -56,6 +60,8 @@ public class MainMenu extends GuiWindow {
     @EventHandler
     public void openInventory(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            PlayerInteractEvent event1;
+            Player player = event.getPlayer();
             ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
             ((ToggleButton)getButton("toggle_button_0")).setState(event.getGuiHandler(), stand.hasBasePlate());
             ((ToggleButton)getButton("toggle_button_1")).setState(event.getGuiHandler(), stand.hasArms());
@@ -64,19 +70,33 @@ public class MainMenu extends GuiWindow {
             ((ToggleButton)getButton("toggle_button_4")).setState(event.getGuiHandler(), !stand.isVisible());
             ((ToggleButton)getButton("toggle_button_5")).setState(event.getGuiHandler(), stand.isCustomNameVisible());
 
-            event.setButton(0, "base_plate");
-            event.setButton(9, "arms");
-            event.setButton(18, "small_stand");
-            event.setButton(27, "no_gravity");
-            event.setButton(36, "invisible");
-            event.setButton(45, "display_name");
+            List<String> allowedOptions = new ArrayList<>();
+            if(player.hasPermission("armorstandtools.option.base_plate")){
+                allowedOptions.add("base_plate");
+            }
+            if(player.hasPermission("armorstandtools.option.arms")){
+                allowedOptions.add("arms");
+            }
+            if(player.hasPermission("armorstandtools.option.small_stand")){
+                allowedOptions.add("small_stand");
+            }
+            if(player.hasPermission("armorstandtools.option.no_gravity")){
+                allowedOptions.add("no_gravity");
+            }
+            if(player.hasPermission("armorstandtools.option.invisible")){
+                allowedOptions.add("invisible");
+            }
+            if(player.hasPermission("armorstandtools.option.display_name")){
+                allowedOptions.add("display_name");
+            }
 
-            event.setButton(1, "toggle_button_0");
-            event.setButton(10, "toggle_button_1");
-            event.setButton(19, "toggle_button_2");
-            event.setButton(28, "toggle_button_3");
-            event.setButton(37, "toggle_button_4");
-            event.setButton(46, "toggle_button_5");
+            int i = 0;
+            for (String option : allowedOptions) {
+                int j = i > 0 ? i / 9 : 0;
+                event.setButton(i, option);
+                event.setButton(i+1, "toggle_button_"+j);
+                i += 9;
+            }
 
             event.setButton(9 + 4, "rotation_head");
             event.setButton(2 * 9 + 3, "rotation_left_arm");
