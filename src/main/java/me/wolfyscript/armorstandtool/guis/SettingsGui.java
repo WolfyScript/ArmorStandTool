@@ -7,9 +7,9 @@ import me.wolfyscript.armorstandtool.guis.buttons.PoseResetButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ValueDisplayButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ValueEditButton;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.*;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.protection.PSUtils;
 import me.wolfyscript.utilities.api.utils.protection.WGUtils;
@@ -18,13 +18,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
 
 public class SettingsGui extends GuiWindow {
 
@@ -50,24 +46,18 @@ public class SettingsGui extends GuiWindow {
         registerButton(new PoseResetButton("y"));
         registerButton(new PoseResetButton("z"));
 
-        registerButton(new ActionButton("yaw", new ButtonState("yaw", Material.YELLOW_DYE, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
-                Location loc = stand.getLocation();
-                loc.setYaw(0);
-                teleportStand(stand, loc, player);
-                return true;
-            }
+        registerButton(new ActionButton("yaw", Material.YELLOW_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+            Location loc = stand.getLocation();
+            loc.setYaw(0);
+            teleportStand(stand, loc, player);
+            return true;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+            hashMap.put("%value%", ArmorStandTool.getPlayerCache(player).getArmorStand().getLocation().getYaw());
+            return itemStack;
+        }));
 
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                hashMap.put("%value%", ArmorStandTool.getPlayerCache(player).getArmorStand().getLocation().getYaw());
-                return itemStack;
-            }
-        })));
-
-        registerButton(new ActionButton("free_edit", new ButtonState("free_edit", Material.CYAN_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("free_edit", Material.CYAN_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache playerCache = ArmorStandTool.getPlayerCache(player);
             ArmorStand stand = playerCache.getArmorStand();
             switch (i) {
@@ -89,67 +79,64 @@ public class SettingsGui extends GuiWindow {
                 guiHandler.close();
             }
             return true;
-        })));
+        }));
 
-        registerButton(new ActionButton("back", new ButtonState("back", Material.MAGENTA_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", Material.MAGENTA_DYE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
             return true;
-        })));
+        }));
     }
 
-    @EventHandler
-    public void onInventoryOpen(GuiUpdateEvent event) {
-        if (event.verify(this)) {
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+        update.setButton(0, "value_-1.0");
+        update.setButton(1, "value_-0.1");
+        update.setButton(2, "value_-0.01");
+        update.setButton(9, "value_-1.0");
+        update.setButton(10, "value_-0.1");
+        update.setButton(11, "value_-0.01");
+        update.setButton(18, "value_-1.0");
+        update.setButton(19, "value_-0.1");
+        update.setButton(20, "value_-0.01");
 
-            event.setButton(0, "value_-1.0");
-            event.setButton(1, "value_-0.1");
-            event.setButton(2, "value_-0.01");
-            event.setButton(9, "value_-1.0");
-            event.setButton(10, "value_-0.1");
-            event.setButton(11, "value_-0.01");
-            event.setButton(18, "value_-1.0");
-            event.setButton(19, "value_-0.1");
-            event.setButton(20, "value_-0.01");
+        if (ArmorStandTool.getPlayerCache(update.getPlayer()).getCurrentOption().equals(OptionType.POSITION)) {
+            update.setButton(3, "loc_x");
+            update.setButton(12, "loc_y");
+            update.setButton(21, "loc_z");
 
-            if (ArmorStandTool.getPlayerCache(event.getPlayer()).getCurrentOption().equals(OptionType.POSITION)) {
-                event.setButton(3, "loc_x");
-                event.setButton(12, "loc_y");
-                event.setButton(21, "loc_z");
+            update.setButton(30, "yaw");
+            update.setButton(27, "value_-1.0");
+            update.setButton(28, "value_-0.1");
+            update.setButton(29, "value_-0.01");
 
-                event.setButton(30, "yaw");
-                event.setButton(27, "value_-1.0");
-                event.setButton(28, "value_-0.1");
-                event.setButton(29, "value_-0.01");
+            update.setButton(31, "value_0.01");
+            update.setButton(32, "value_0.1");
+            update.setButton(33, "value_1.0");
 
-                event.setButton(31, "value_0.01");
-                event.setButton(32, "value_0.1");
-                event.setButton(33, "value_1.0");
+            update.setButton(35, "free_edit");
+        } else {
+            update.setButton(3, "pose_x");
+            update.setButton(12, "pose_y");
+            update.setButton(21, "pose_z");
 
-                event.setButton(35, "free_edit");
-            } else {
-                event.setButton(3, "pose_x");
-                event.setButton(12, "pose_y");
-                event.setButton(21, "pose_z");
-
-                for(int i = 27; i < 36; i++){
-                    event.setItem(i, new ItemStack(Material.AIR));
-                }
+            for (int i = 27; i < 36; i++) {
+                update.setItem(i, new ItemStack(Material.AIR));
             }
-
-            event.setButton(4, "value_0.01");
-            event.setButton(5, "value_0.1");
-            event.setButton(6, "value_1.0");
-            event.setButton(13, "value_0.01");
-            event.setButton(14, "value_0.1");
-            event.setButton(15, "value_1.0");
-            event.setButton(22, "value_0.01");
-            event.setButton(23, "value_0.1");
-            event.setButton(24, "value_1.0");
-            event.setButton(8, "free_edit");
-            event.setButton(17, "free_edit");
-            event.setButton(26, "free_edit");
-            event.setButton(45, "back");
         }
+
+        update.setButton(4, "value_0.01");
+        update.setButton(5, "value_0.1");
+        update.setButton(6, "value_1.0");
+        update.setButton(13, "value_0.01");
+        update.setButton(14, "value_0.1");
+        update.setButton(15, "value_1.0");
+        update.setButton(22, "value_0.01");
+        update.setButton(23, "value_0.1");
+        update.setButton(24, "value_1.0");
+        update.setButton(8, "free_edit");
+        update.setButton(17, "free_edit");
+        update.setButton(26, "free_edit");
+        update.setButton(45, "back");
     }
 
     @EventHandler

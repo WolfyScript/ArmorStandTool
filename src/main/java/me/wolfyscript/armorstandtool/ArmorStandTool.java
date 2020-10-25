@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.api.utils.protection.PSUtils;
 import me.wolfyscript.utilities.api.utils.protection.WGUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -81,7 +82,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         //Bukkit.getPluginCommand("locatestands").setExecutor(new LocateArmorStandsCommand());
 
         Bukkit.getPluginManager().registerEvents(this, instance);
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, 5222);
     }
 
     public void onDisable() {
