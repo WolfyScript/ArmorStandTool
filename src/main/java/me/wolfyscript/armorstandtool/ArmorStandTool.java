@@ -1,19 +1,22 @@
 package me.wolfyscript.armorstandtool;
 
 import me.wolfyscript.armorstandtool.configs.ArmorStandToolConfig;
+import me.wolfyscript.armorstandtool.data.FreeEditMode;
 import me.wolfyscript.armorstandtool.data.OptionType;
 import me.wolfyscript.armorstandtool.data.PlayerCache;
+import me.wolfyscript.armorstandtool.guis.ASTGUICluster;
 import me.wolfyscript.armorstandtool.guis.MainMenu;
 import me.wolfyscript.armorstandtool.guis.SettingsGui;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.events.GuiCloseEvent;
+import me.wolfyscript.utilities.api.chat.Chat;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.api.utils.protection.PSUtils;
-import me.wolfyscript.utilities.api.utils.protection.WGUtils;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.protection.PSUtils;
+import me.wolfyscript.utilities.util.protection.WGUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -40,28 +43,20 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     private static WolfyUtilities wolfyUtilities;
     private static ArmorStandToolConfig config;
 
-    private static HashMap<String, ArmorStand> currentlyActive = new HashMap<>();
+    public static HashMap<String, ArmorStand> currentlyActive = new HashMap<>();
     private static HashMap<String, PlayerCache> playerCaches = new HashMap<>();
-
-    private static boolean enabled = false;
 
     public void onLoad() {
         instance = this;
     }
 
     public void onEnable() {
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
-            Bukkit.getConsoleSender().sendMessage("You need to have the LATEST WolfyUtilities in order to run this plugin!");
-            Bukkit.getConsoleSender().sendMessage("Download here: https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-        enabled = true;
-        wolfyUtilities = WolfyUtilities.getOrCreateAPI(instance);
-        wolfyUtilities.setCHAT_PREFIX("§3[§7AST§3] §7");
-        wolfyUtilities.setCONSOLE_PREFIX("[AST] ");
+        wolfyUtilities = WolfyUtilities.get(instance);
+        Chat chat = wolfyUtilities.getChat();
+        chat.setIN_GAME_PREFIX("§3[§7AST§3] §7");
+        chat.setCONSOLE_PREFIX("[AST] ");
 
-        InventoryAPI<?> inventoryAPI = wolfyUtilities.getInventoryAPI();
+        InventoryAPI<CustomCache> inventoryAPI = wolfyUtilities.getInventoryAPI(CustomCache.class);
 
         //Load Config
         try {
@@ -73,9 +68,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
 
         loadLanguage();
 
-        GuiCluster mainCluster = inventoryAPI.getOrRegisterGuiCluster("main");
-        mainCluster.registerGuiWindow(new MainMenu(inventoryAPI));
-        mainCluster.registerGuiWindow(new SettingsGui(inventoryAPI));
+        inventoryAPI.registerCluster(new ASTGUICluster(inventoryAPI, "main"));
 
         //Bukkit.getPluginCommand("locatestands").setExecutor(new LocateArmorStandsCommand());
 
@@ -84,12 +77,10 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        if (enabled) {
-            try {
-                JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), "config.json"), config);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), "config.json"), config);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -103,21 +94,18 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         String lang = config.getLang();
         saveResource("lang/en_US.json", true);
         saveResource("lang/de_DE.json", true);
-        try {
-            Language fallBackLanguage = new Language(this, "en_US");
 
-            languageAPI.registerLanguage(fallBackLanguage);
-            System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join("", fallBackLanguage.getAuthors()));
+        Language fallBackLanguage = new Language(this, "en_US");
 
-            File file = new File(getDataFolder(), "lang/" + lang + ".json");
-            if (file.exists()) {
-                Language language = new Language(this, lang);
-                languageAPI.registerLanguage(language);
-                languageAPI.setActiveLanguage(language);
-                System.out.println("Loaded active language \"" + lang + "\" v" + language.getVersion() + " translated by " + String.join("", language.getAuthors()));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        languageAPI.registerLanguage(fallBackLanguage);
+        System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join("", fallBackLanguage.getAuthors()));
+
+        File file = new File(getDataFolder(), "lang/" + lang + ".json");
+        if (file.exists()) {
+            Language language = new Language(this, lang);
+            languageAPI.registerLanguage(language);
+            languageAPI.setActiveLanguage(language);
+            System.out.println("Loaded active language \"" + lang + "\" v" + language.getVersion() + " translated by " + String.join("", language.getAuthors()));
         }
     }
 
@@ -126,11 +114,11 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     public void onInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         PlayerCache playerCache = getPlayerCache(player);
-        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && playerCache.getFreeEdit() != -1) {
+        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
             event.setCancelled(true);
-            wolfyUtilities.sendPlayerMessage(player, "$msg.free_edit.cancelled$");
+            wolfyUtilities.getChat().sendMessages(player, "$msg.free_edit.cancelled$");
             playerCache.setFreeEditLoc(null);
-            playerCache.setFreeEdit(-1);
+            playerCache.setFreeEdit(FreeEditMode.NONE);
         } else if (!event.isCancelled() && event.getRightClicked() instanceof ArmorStand && (!currentlyActive.containsValue(event.getRightClicked()) || event.getRightClicked().equals(currentlyActive.get(player.getUniqueId().toString()))) && hasPerm(event.getRightClicked().getLocation(), player)) {
             if (player.isSneaking()) {
                 getPlayerCache(player).setArmorStand((ArmorStand) event.getRightClicked());
@@ -139,16 +127,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                 event.setCancelled(true);
             }
         } else if (event.getRightClicked() instanceof ArmorStand && player.isSneaking()) {
-            wolfyUtilities.sendPlayerMessage(event.getPlayer(), "$msg.edit.open.cancelled$");
-        }
-    }
-
-    @EventHandler
-    public void onClose(GuiCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        PlayerCache playerCache = getPlayerCache(player);
-        if (playerCache.getFreeEdit() == -1) {
-            currentlyActive.put(player.getUniqueId().toString(), null);
+            wolfyUtilities.getChat().sendMessages(player, "$msg.edit.open.cancelled$");
         }
     }
 
@@ -157,11 +136,11 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         if (event.getDamager() instanceof Player && event.getEntity() instanceof ArmorStand) {
             Player player = (Player) event.getDamager();
             PlayerCache playerCache = getPlayerCache(player);
-            if (!playerCache.getCurrentOption().equals(OptionType.NONE) && playerCache.getFreeEdit() != -1) {
+            if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
                 event.setCancelled(true);
-                wolfyUtilities.sendPlayerMessage(player, "$msg.free_edit.cancelled$");
+                wolfyUtilities.getChat().sendMessage(player, "$msg.free_edit.cancelled$");
                 playerCache.setFreeEditLoc(null);
-                playerCache.setFreeEdit(-1);
+                playerCache.setFreeEdit(FreeEditMode.NONE);
             } else if (!config.isArmorStandKnockback()) {
                 Location loc = event.getEntity().getLocation();
                 Bukkit.getScheduler().runTaskLater(this, () -> {
@@ -175,11 +154,11 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         PlayerCache playerCache = getPlayerCache(event.getPlayer());
-        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && playerCache.getFreeEdit() != -1) {
+        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
             event.setCancelled(true);
-            wolfyUtilities.sendPlayerMessage(event.getPlayer(), "$msg.free_edit.cancelled$");
+            wolfyUtilities.getChat().sendMessage(event.getPlayer(), "$msg.free_edit.cancelled$");
             playerCache.setFreeEditLoc(null);
-            playerCache.setFreeEdit(-1);
+            playerCache.setFreeEdit(FreeEditMode.NONE);
         }
     }
 
@@ -189,14 +168,13 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    wolfyUtilities.sendPlayerMessage(p, "~*~*~*~*&6[&3&lArmorStandTool&6]&7~*~*~*~*~");
-                    wolfyUtilities.sendPlayerMessage(p, "");
-                    wolfyUtilities.sendPlayerMessage(p, "        &n     by &b&n&lWolfyScript&7&n      ");
-                    wolfyUtilities.sendPlayerMessage(p, "          ------------------");
-                    wolfyUtilities.sendPlayerMessage(p, "");
-                    wolfyUtilities.sendPlayerMessage(p, "               &nVersion:&r&b " + getDescription().getVersion());
-                    wolfyUtilities.sendPlayerMessage(p, "");
-                    wolfyUtilities.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
+                    wolfyUtilities.getChat().sendMessages(p,
+                            "~*~*~*~*&6[&3&lArmorStandTool&6]&7~*~*~*~*~",
+                            "",
+                            "        &n     by &b&n&lWolfyScript&7&n      ",
+                            "",
+                            "               &nVersion:&r&b " + getDescription().getVersion(),
+                            "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
                 }
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("armorstandtool.reload")) {
@@ -211,14 +189,13 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                     inventoryAPI.reset();
                     loadLanguage();
 
-                    GuiCluster mainCluster = inventoryAPI.getOrRegisterGuiCluster("main");
-                    mainCluster.registerGuiWindow(new MainMenu(inventoryAPI));
-                    mainCluster.registerGuiWindow(new SettingsGui(inventoryAPI));
+                    inventoryAPI.reset();
 
+                    Chat chat = wolfyUtilities.getChat();
                     if (sender instanceof Player) {
-                        wolfyUtilities.sendPlayerMessage((Player) sender, "$msg.reload.complete$");
+                        chat.sendMessage((Player) sender, "$msg.reload.complete$");
                     } else {
-                        wolfyUtilities.sendConsoleMessage("$msg.reload.complete$");
+                        chat.sendConsoleMessage("$msg.reload.complete$");
                     }
                 }
             }

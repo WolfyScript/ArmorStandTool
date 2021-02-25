@@ -2,42 +2,46 @@ package me.wolfyscript.armorstandtool.guis.buttons;
 
 import me.wolfyscript.armorstandtool.ArmorStandTool;
 import me.wolfyscript.armorstandtool.guis.SettingsGui;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class ValueEditButton extends ActionButton {
+public class ValueEditButton extends ActionButton<CustomCache> {
 
     public ValueEditButton(float value, Material material) {
-        super("value_" + value, new ButtonState("value", material, (guiHandler, player, inventory, slot, event) -> {
-            ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
-            float currentValue = value;
-            if (event.isShiftClick()) {
-                currentValue *= 0.001f;
-            }
-            if (slot >= 0 && slot < 8) {
-                changeValue(player, currentValue, 0, 0);
-            }
-            if (slot >= 9 && slot < 17) {
-                changeValue(player, 0, currentValue, 0);
-            }
-            if (slot >= 18 && slot < 26) {
-                changeValue(player, 0, 0, currentValue);
-            }
-            if (slot >= 27 && slot < 35) {
-                Location loc = stand.getLocation();
-                loc.setYaw(loc.getYaw() + currentValue);
-                SettingsGui.teleportStand(stand, loc, player);
+        super("value_" + value, new ButtonState<>("value", material,(customCache, guiHandler, player, guiInventory, slot, event) -> {
+            if(event instanceof InventoryClickEvent){
+                ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+                float currentValue = value;
+                if (((InventoryClickEvent) event).isShiftClick()) {
+                    currentValue *= 0.001f;
+                }
+                if (slot >= 0 && slot < 8) {
+                    changeValue(player, currentValue, 0, 0);
+                }
+                if (slot >= 9 && slot < 17) {
+                    changeValue(player, 0, currentValue, 0);
+                }
+                if (slot >= 18 && slot < 26) {
+                    changeValue(player, 0, 0, currentValue);
+                }
+                if (slot >= 27 && slot < 35) {
+                    Location loc = stand.getLocation();
+                    loc.setYaw(loc.getYaw() + currentValue);
+                    SettingsGui.teleportStand(stand, loc, player);
+                }
             }
             return true;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        }, (hashMap, customCache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             hashMap.put("%var%", value);
             DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
             df.setMaximumFractionDigits(5);

@@ -5,33 +5,33 @@ import me.wolfyscript.armorstandtool.guis.buttons.EquipmentButton;
 import me.wolfyscript.armorstandtool.guis.buttons.RotatePosSettingsButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ToggleSettingButton;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainMenu extends GuiWindow {
+public class MainMenu extends GuiWindow<CustomCache> {
 
-    public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 54);
+    public MainMenu(ASTGUICluster cluster) {
+        super(cluster, "main_menu", 54, true);
     }
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton("base_plate", Material.STONE_PRESSURE_PLATE));
-        registerButton(new DummyButton("arms", Material.STICK));
-        registerButton(new DummyButton("small_stand", Material.CLAY_BALL));
-        registerButton(new DummyButton("no_gravity", Material.RAIL));
-        registerButton(new DummyButton("invisible", Material.POTION));
-        registerButton(new DummyButton("display_name", Material.NAME_TAG));
+        registerButton(new DummyButton<>("base_plate", Material.STONE_PRESSURE_PLATE));
+        registerButton(new DummyButton<>("arms", Material.STICK));
+        registerButton(new DummyButton<>("small_stand", Material.CLAY_BALL));
+        registerButton(new DummyButton<>("no_gravity", Material.RAIL));
+        registerButton(new DummyButton<>("invisible", Material.POTION));
+        registerButton(new DummyButton<>("display_name", Material.NAME_TAG));
 
         for (int i = 0; i < 6; i++) {
             registerButton(new ToggleSettingButton(i));
@@ -45,12 +45,12 @@ public class MainMenu extends GuiWindow {
         registerButton(new RotatePosSettingsButton("rotation_head", Material.IRON_HELMET));
         registerButton(new RotatePosSettingsButton("position", Material.IRON_BLOCK));
 
-        registerButton(new DummyButton("helmet", Material.LEATHER_HELMET));
-        registerButton(new DummyButton("chestplate", Material.LEATHER_CHESTPLATE));
-        registerButton(new DummyButton("leggings", Material.LEATHER_LEGGINGS));
-        registerButton(new DummyButton("boots", Material.LEATHER_BOOTS));
-        registerButton(new DummyButton("left_hand", Material.STICK));
-        registerButton(new DummyButton("right_hand", Material.STICK));
+        registerButton(new DummyButton<>("helmet", Material.LEATHER_HELMET));
+        registerButton(new DummyButton<>("chestplate", Material.LEATHER_CHESTPLATE));
+        registerButton(new DummyButton<>("leggings", Material.LEATHER_LEGGINGS));
+        registerButton(new DummyButton<>("boots", Material.LEATHER_BOOTS));
+        registerButton(new DummyButton<>("left_hand", Material.STICK));
+        registerButton(new DummyButton<>("right_hand", Material.STICK));
 
         for (int i = 0; i < 6; i++) {
             registerButton(new EquipmentButton(i));
@@ -58,15 +58,15 @@ public class MainMenu extends GuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateSync(GuiUpdate<CustomCache> update) {
         Player player = update.getPlayer();
         ArmorStand stand = ArmorStandTool.getPlayerCache(update.getPlayer()).getArmorStand();
-        ((ToggleButton) getButton("toggle_button_0")).setState(update.getGuiHandler(), stand.hasBasePlate());
-        ((ToggleButton) getButton("toggle_button_1")).setState(update.getGuiHandler(), stand.hasArms());
-        ((ToggleButton) getButton("toggle_button_2")).setState(update.getGuiHandler(), stand.isSmall());
-        ((ToggleButton) getButton("toggle_button_3")).setState(update.getGuiHandler(), stand.hasGravity());
-        ((ToggleButton) getButton("toggle_button_4")).setState(update.getGuiHandler(), !stand.isVisible());
-        ((ToggleButton) getButton("toggle_button_5")).setState(update.getGuiHandler(), stand.isCustomNameVisible());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_0")).setState(update.getGuiHandler(), stand.hasBasePlate());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_1")).setState(update.getGuiHandler(), stand.hasArms());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_2")).setState(update.getGuiHandler(), stand.isSmall());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_3")).setState(update.getGuiHandler(), stand.hasGravity());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_4")).setState(update.getGuiHandler(), !stand.isVisible());
+        ((ToggleButton<CustomCache>) getButton("toggle_button_5")).setState(update.getGuiHandler(), stand.isCustomNameVisible());
 
         List<String> allowedOptions = new ArrayList<>();
         if (player.hasPermission("armorstandtools.option.base_plate")) {
@@ -119,6 +119,11 @@ public class MainMenu extends GuiWindow {
         update.setButton(53, "equipment_container_5");
     }
 
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+
+    }
+
     public static void toggleStandSettings(int slot, Player player) {
         ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
         switch (slot) {
@@ -136,7 +141,7 @@ public class MainMenu extends GuiWindow {
                 break;
             case 37:
                 if ((stand.getEquipment() != null && (!stand.getEquipment().getItemInMainHand().getType().equals(Material.AIR) || !stand.getEquipment().getItemInOffHand().getType().equals(Material.AIR))) || !stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)) {
-                    if (WolfyUtilities.hasPermission(player, "armorstandtool.edit.invisible")) {
+                    if (ArmorStandTool.getAPI().getPermissions().hasPermission(player, "armorstandtool.edit.invisible")) {
                         stand.setVisible(!stand.isVisible());
                     }
                 }

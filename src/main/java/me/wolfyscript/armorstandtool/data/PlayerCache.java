@@ -7,13 +7,13 @@ public class PlayerCache {
 
     private OptionType currentOption;
     private ArmorStand armorStand;
-    private int freeEdit;
+    private FreeEditMode freeEdit;
     private Location freeEditLoc;
     private Location freeEditStandPos;
     private double lastDis;
 
     public PlayerCache(){
-        this.freeEdit = -1;
+        this.freeEdit = FreeEditMode.NONE;
         this.currentOption = OptionType.NONE;
         lastDis = -9999d;
     }
@@ -46,11 +46,11 @@ public class PlayerCache {
         return freeEditLoc;
     }
 
-    public void setFreeEdit(int freeEdit) {
+    public void setFreeEdit(FreeEditMode freeEdit) {
         this.freeEdit = freeEdit;
     }
 
-    public int getFreeEdit() {
+    public FreeEditMode getFreeEdit() {
         return freeEdit;
     }
 
