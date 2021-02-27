@@ -6,13 +6,17 @@
 
     <groupId>WolfyScript</groupId>
     <artifactId>ArmorStandTool</artifactId>
-    <version>1.6.2.1</version>
+    <version>1.6.3.0</version>
 
     <properties>
         <!-- Generic properties -->
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
+        <spigot.groupId>org.spigotmc</spigot.groupId>
+        <spigot.artifactId>spigot-api</spigot.artifactId>
     </properties>
 
     <repositories>
@@ -24,15 +28,44 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.wolfyscript</groupId>
+            <groupId>com.wolfyscript.wolfyutilities</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.6.2.15</version>
+            <version>1.6.3.10</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!--Spigot API-->
+        <dependency>
+            <groupId>${spigot.groupId}</groupId>
+            <artifactId>${spigot.artifactId}</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${spigot.groupId}</groupId>
+            <artifactId>${spigot.artifactId}</artifactId>
+            <version>${spigot.version}</version>
+            <classifier>javadoc</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${spigot.groupId}</groupId>
+            <artifactId>${spigot.artifactId}</artifactId>
+            <version>${spigot.version}</version>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -66,16 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>me.wolfyscript.armorstandtool.metrics</shadedPattern>
-                        </relocation>
-                    </relocations>
-                    <shadeSourcesContent>true</shadeSourcesContent>
-                </configuration>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -83,6 +107,14 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>me.wolfyscript.armorstandtool.metrics</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <artifactSet>
                                 <includes>
                                     <include>org.bstats</include>
