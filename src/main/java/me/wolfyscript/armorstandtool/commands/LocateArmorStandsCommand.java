@@ -1,5 +1,7 @@
 package me.wolfyscript.armorstandtool.commands;
 
+import me.wolfyscript.armorstandtool.ArmorStandTool;
+import me.wolfyscript.armorstandtool.data.FreeEditMode;
 import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,10 +21,15 @@ public class LocateArmorStandsCommand implements CommandExecutor {
         if(sender instanceof Player){
             Player player = (Player) sender;
 
+            ArmorStandTool.getPlayerCache(player).setFreeEdit(FreeEditMode.RELOCATE_CURSOR);
+
             Collection<Entity> entities = player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 5, 5, 5, entity -> entity instanceof ArmorStand);
 
             entities.forEach(entity -> {
-                player.spawnParticle(Particle.BARRIER, entity.getLocation().add(0, 0.5, 0), 1);
+                if(ArmorStandTool.getPlayerCache(player).getArmorStand() == null){
+                    ArmorStandTool.getPlayerCache(player).setArmorStand((ArmorStand) entity);
+                    player.spawnParticle(Particle.BARRIER, entity.getLocation().add(0, 0.5, 0), 1);
+                }
             });
 
 

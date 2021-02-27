@@ -168,6 +168,19 @@
             "name": "&a&lZurück",
             "lore": [
             ]
+          },
+          "relocate_cursor": {
+            "name": "&e&lBewegen via Mauscursor",
+            "lore": [
+              "Bewege den ArmorStand zur Mitte",
+              "auf dem Block, auf den du schaust."
+            ]
+          },
+          "relocate_player": {
+            "name": "&e&lBewegen via Spieler",
+            "lore": [
+              "Bewege den ArmorStand zu deiner Position."
+            ]
           }
         }
       }

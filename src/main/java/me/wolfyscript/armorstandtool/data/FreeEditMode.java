@@ -6,5 +6,7 @@ public enum FreeEditMode {
     POS_X,
     POS_Y,
     POS_Z,
-    YAW
+    YAW,
+    RELOCATE_CURSOR,
+    RELOCATE_PLAYER
 }

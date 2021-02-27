@@ -18,10 +18,10 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainMenu extends GuiWindow<CustomCache> {
+public class MainMenu extends ASTGuiWindow {
 
     public MainMenu(ASTGUICluster cluster) {
-        super(cluster, "main_menu", 54, true);
+        super(cluster, "main_menu", 54);
     }
 
     @Override

@@ -7,6 +7,7 @@ import me.wolfyscript.armorstandtool.data.PlayerCache;
 import me.wolfyscript.armorstandtool.guis.buttons.PoseResetButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ValueDisplayButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ValueEditButton;
+import me.wolfyscript.armorstandtool.util.ArmorStandUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -27,10 +28,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.EventListener;
 
-public class SettingsGui extends GuiWindow<CustomCache> implements EventListener {
+public class SettingsGui extends ASTGuiWindow implements EventListener {
 
     public SettingsGui(ASTGUICluster cluster) {
-        super(cluster, "settings", 54, true);
+        super(cluster, "settings", 54);
     }
 
     @Override
@@ -55,11 +56,23 @@ public class SettingsGui extends GuiWindow<CustomCache> implements EventListener
             ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
             Location loc = stand.getLocation();
             loc.setYaw(0);
-            teleportStand(stand, loc, player);
+            ArmorStandUtils.teleportStand(stand, loc, player);
             return true;
         }, (hashMap, customCache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             hashMap.put("%value%", ArmorStandTool.getPlayerCache(player).getArmorStand().getLocation().getYaw());
             return itemStack;
+        }));
+
+        registerButton(new ActionButton<>("relocate_cursor", Material.COMPASS, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            ArmorStandTool.getPlayerCache(player).setFreeEdit(FreeEditMode.RELOCATE_CURSOR);
+            guiHandler.close();
+            return true;
+        }));
+
+        registerButton(new ActionButton<>("relocate_player", Material.LEAD, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            ArmorStandTool.getPlayerCache(player).setFreeEdit(FreeEditMode.RELOCATE_PLAYER);
+            guiHandler.close();
+            return true;
         }));
 
         registerButton(new ActionButton<>("free_edit", Material.CYAN_DYE,(customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
@@ -118,6 +131,12 @@ public class SettingsGui extends GuiWindow<CustomCache> implements EventListener
             update.setButton(32, "value_0.1");
             update.setButton(33, "value_1.0");
 
+            if (update.getPlayer().hasPermission("armorstandtools.option.relocate.cursor")) {
+                update.setButton(53, "relocate_cursor");
+            }
+            if (update.getPlayer().hasPermission("armorstandtools.option.relocate.player")) {
+                update.setButton(52, "relocate_player");
+            }
             update.setButton(35, "free_edit");
         } else {
             update.setButton(3, "pose_x");
@@ -146,141 +165,4 @@ public class SettingsGui extends GuiWindow<CustomCache> implements EventListener
 
     @Override
     public void onUpdateAsync(GuiUpdate<CustomCache> guiUpdate) { }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        if (event.getTo() != null && event.getTo().distance(event.getFrom()) > 0) {
-            PlayerCache playerCache = ArmorStandTool.getPlayerCache(event.getPlayer());
-            FreeEditMode mode = playerCache.getFreeEdit();
-            if (!mode.equals(FreeEditMode.NONE)) {
-                Player player = event.getPlayer();
-                ArmorStand stand = ArmorStandTool.getPlayerCache(event.getPlayer()).getArmorStand();
-                Location standStartPos = playerCache.getFreeEditStandPos().clone();
-                Location playerPos = player.getLocation();
-                Location startPos = playerCache.getFreeEditLoc().clone();
-                double dis = startPos.toVector().length() - playerPos.toVector().length();
-                double disAngle = -0.08;
-                if (dis > 0) {
-                    disAngle *= -1;
-                }
-                if (playerCache.hasLastDis()) {
-                    if ((playerCache.getLastDis() < 0 && playerCache.getLastDis() < dis) || (playerCache.getLastDis() > 0 && playerCache.getLastDis() > dis)) {
-                        disAngle *= -1;
-                    }
-                }
-                playerCache.setLastDis(dis);
-                switch (playerCache.getCurrentOption()) {
-                    case POSITION:
-                        switch (mode) {
-                            case POS_X:
-                                teleportStand(stand, standStartPos.add(dis / 2, 0, 0), player);
-                                break;
-                            case POS_Y:
-                                teleportStand(stand, standStartPos.add(0, dis / 2, 0), player);
-                                break;
-                            case POS_Z:
-                                teleportStand(stand, standStartPos.add(0, 0, dis / 2), player);
-                                break;
-                            case YAW:
-                                standStartPos.setYaw(standStartPos.getYaw() + (float) dis * 20f);
-                                teleportStand(stand, standStartPos, player);
-                                break;
-                        }
-                        break;
-                    case ROTATION_BODY:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setBodyPose(stand.getBodyPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setBodyPose(stand.getBodyPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setBodyPose(stand.getBodyPose().add(0, 0, disAngle));
-                                break;
-                        }
-                        break;
-                    case ROTATION_HEAD:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setHeadPose(stand.getHeadPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setHeadPose(stand.getHeadPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setHeadPose(stand.getHeadPose().add(0, 0, disAngle));
-                                break;
-                        }
-                        break;
-                    case ROTATION_LEFT_ARM:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setLeftArmPose(stand.getLeftArmPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setLeftArmPose(stand.getLeftArmPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setLeftArmPose(stand.getLeftArmPose().add(0, 0, disAngle));
-                                break;
-                        }
-                        break;
-                    case ROTATION_RIGHT_ARM:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setRightArmPose(stand.getRightArmPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setRightArmPose(stand.getRightArmPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setRightArmPose(stand.getRightArmPose().add(0, 0, disAngle));
-                        }
-                        break;
-                    case ROTATION_LEFT_LEG:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setLeftLegPose(stand.getLeftLegPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setLeftLegPose(stand.getLeftLegPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setLeftLegPose(stand.getLeftLegPose().add(0, 0, disAngle));
-                                break;
-                        }
-                        break;
-                    case ROTATION_RIGHT_LEG:
-                        switch (mode) {
-                            case POS_X:
-                                stand.setRightLegPose(stand.getRightLegPose().add(disAngle, 0, 0));
-                                break;
-                            case POS_Y:
-                                stand.setRightLegPose(stand.getRightLegPose().add(0, disAngle, 0));
-                                break;
-                            case YAW:
-                                stand.setRightLegPose(stand.getRightLegPose().add(0, 0, disAngle));
-                                break;
-                        }
-                }
-            }
-        }
-    }
-
-    public static boolean teleportStand(ArmorStand stand, Location location, Player player) {
-        if (WolfyUtilities.hasPlotSquared() && PSUtils.isPlotWorld(location.getWorld())) {
-            if (PSUtils.hasPerm(player, location)) {
-                stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-                return true;
-            }
-            return false;
-        } else if (WolfyUtilities.hasWorldGuard()) {
-            return WGUtils.teleportEntity(stand, location, player);
-        } else {
-            stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            return true;
-        }
-
-    }
 }

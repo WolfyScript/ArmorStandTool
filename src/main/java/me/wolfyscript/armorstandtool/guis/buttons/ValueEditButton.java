@@ -2,6 +2,7 @@ package me.wolfyscript.armorstandtool.guis.buttons;
 
 import me.wolfyscript.armorstandtool.ArmorStandTool;
 import me.wolfyscript.armorstandtool.guis.SettingsGui;
+import me.wolfyscript.armorstandtool.util.ArmorStandUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
@@ -37,7 +38,7 @@ public class ValueEditButton extends ActionButton<CustomCache> {
                 if (slot >= 27 && slot < 35) {
                     Location loc = stand.getLocation();
                     loc.setYaw(loc.getYaw() + currentValue);
-                    SettingsGui.teleportStand(stand, loc, player);
+                    ArmorStandUtils.teleportStand(stand, loc, player);
                 }
             }
             return true;
@@ -55,7 +56,7 @@ public class ValueEditButton extends ActionButton<CustomCache> {
         Location currentLocation = stand.getLocation();
         switch (ArmorStandTool.getPlayerCache(player).getCurrentOption()) {
             case POSITION:
-                SettingsGui.teleportStand(stand, currentLocation.add(x, y, z), player);
+                ArmorStandUtils.teleportStand(stand, currentLocation.add(x, y, z), player);
                 break;
             case ROTATION_BODY:
                 stand.setBodyPose(stand.getBodyPose().add(x, y, z));

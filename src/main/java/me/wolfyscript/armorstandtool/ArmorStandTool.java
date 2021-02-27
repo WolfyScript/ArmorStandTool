@@ -1,5 +1,6 @@
 package me.wolfyscript.armorstandtool;
 
+import me.wolfyscript.armorstandtool.commands.LocateArmorStandsCommand;
 import me.wolfyscript.armorstandtool.configs.ArmorStandToolConfig;
 import me.wolfyscript.armorstandtool.data.FreeEditMode;
 import me.wolfyscript.armorstandtool.data.OptionType;
@@ -7,6 +8,7 @@ import me.wolfyscript.armorstandtool.data.PlayerCache;
 import me.wolfyscript.armorstandtool.guis.ASTGUICluster;
 import me.wolfyscript.armorstandtool.guis.MainMenu;
 import me.wolfyscript.armorstandtool.guis.SettingsGui;
+import me.wolfyscript.armorstandtool.listener.FreeEditListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -73,6 +75,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         //Bukkit.getPluginCommand("locatestands").setExecutor(new LocateArmorStandsCommand());
 
         Bukkit.getPluginManager().registerEvents(this, instance);
+        Bukkit.getPluginManager().registerEvents(new FreeEditListener(), instance);
         Metrics metrics = new Metrics(this, 5222);
     }
 
