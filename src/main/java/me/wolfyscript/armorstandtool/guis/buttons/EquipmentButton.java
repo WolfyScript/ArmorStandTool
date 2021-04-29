@@ -1,19 +1,19 @@
 package me.wolfyscript.armorstandtool.guis.buttons;
 
 import me.wolfyscript.armorstandtool.ArmorStandTool;
+import me.wolfyscript.armorstandtool.data.ASTCache;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;
 
-public class EquipmentButton extends ItemInputButton<CustomCache> {
+public class EquipmentButton extends ItemInputButton<ASTCache> {
 
     public EquipmentButton(int equipmentSlot) {
-        super("equipment_container_" + equipmentSlot, Material.AIR,(customCache, guiHandler, player, inventory, i, inventoryInteractEvent) -> {
-            ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
-            Bukkit.getScheduler().runTaskLater(ArmorStandTool.getInstance(), () -> {
+        super("equipment_container_" + equipmentSlot, Material.AIR,(cache, guiHandler, player, inventory, i, inventoryInteractEvent) -> {
+            ArmorStand stand = cache.getArmorStand();
+            Bukkit.getScheduler().runTaskLater(ArmorStandTool.inst(), () -> {
                 ItemStack itemStack = inventory.getItem(i);
                 switch (equipmentSlot) {
                     case 0:
@@ -32,8 +32,8 @@ public class EquipmentButton extends ItemInputButton<CustomCache> {
                 }
             }, 1);
             return false;
-        },(hashMap, customCache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+        },(hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+            ArmorStand stand = cache.getArmorStand();
             switch (equipmentSlot) {
                 case 0:
                 case 1:
@@ -44,8 +44,9 @@ public class EquipmentButton extends ItemInputButton<CustomCache> {
                     return stand.getEquipment().getItemInOffHand();
                 case 5:
                     return stand.getEquipment().getItemInMainHand();
+                default:
+                    return itemStack;
             }
-            return itemStack;
         });
     }
 }

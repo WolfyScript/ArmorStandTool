@@ -8,12 +8,12 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 
-public class PoseResetButton extends ActionButton<CustomCache> {
+public class PoseResetButton extends ActionButton<ASTCache> {
 
     public PoseResetButton(String xyz) {
-        super("pose_" + xyz, new ButtonState<>("pose." + xyz, Material.YELLOW_DYE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
-            switch (ArmorStandTool.getPlayerCache(player).getCurrentOption()) {
+        super("pose_" + xyz, new ButtonState<>("pose." + xyz, Material.YELLOW_DYE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            ArmorStand stand = cache.getArmorStand();
+            switch (cache.getCurrentOption()) {
                 case ROTATION_RIGHT_LEG:
                     stand.setRightLegPose(ArmorStandUtils.resetRotation(stand.getRightLegPose(), xyz));
                     break;
@@ -36,8 +36,8 @@ public class PoseResetButton extends ActionButton<CustomCache> {
                     //No setting!
             }
             return true;
-        }, (hashMap, customCache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            hashMap.put("%value%", getPose(ArmorStandTool.getPlayerCache(player).getCurrentOption(), xyz, ArmorStandTool.getPlayerCache(player).getArmorStand()));
+        }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+            hashMap.put("%value%", getPose(cache.getCurrentOption(), xyz, cache.getArmorStand()));
             return itemStack;
         }));
     }

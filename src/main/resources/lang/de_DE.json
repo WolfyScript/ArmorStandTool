@@ -172,8 +172,8 @@
           "relocate_cursor": {
             "name": "&e&lBewegen via Mauscursor",
             "lore": [
-              "Bewege den ArmorStand zur Mitte",
-              "auf dem Block, auf den du schaust."
+              "Bewege den ArmorStand zur Mitte des",
+              "Blockes, auf den du schaust."
             ]
           },
           "relocate_player": {

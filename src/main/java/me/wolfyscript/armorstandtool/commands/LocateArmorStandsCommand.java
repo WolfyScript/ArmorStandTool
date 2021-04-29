@@ -20,7 +20,7 @@ public class LocateArmorStandsCommand implements CommandExecutor {
 
         if(sender instanceof Player){
             Player player = (Player) sender;
-
+            /*
             ArmorStandTool.getPlayerCache(player).setFreeEdit(FreeEditMode.RELOCATE_CURSOR);
 
             Collection<Entity> entities = player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 5, 5, 5, entity -> entity instanceof ArmorStand);
@@ -32,7 +32,7 @@ public class LocateArmorStandsCommand implements CommandExecutor {
                 }
             });
 
-
+             */
         }
 
         return false;

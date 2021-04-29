@@ -1,11 +1,9 @@
 package me.wolfyscript.armorstandtool.guis.buttons;
 
-import me.wolfyscript.armorstandtool.ArmorStandTool;
-import me.wolfyscript.armorstandtool.guis.SettingsGui;
+import me.wolfyscript.armorstandtool.data.ASTCache;
 import me.wolfyscript.armorstandtool.util.ArmorStandUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -16,24 +14,24 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class ValueEditButton extends ActionButton<CustomCache> {
+public class ValueEditButton extends ActionButton<ASTCache> {
 
     public ValueEditButton(float value, Material material) {
-        super("value_" + value, new ButtonState<>("value", material,(customCache, guiHandler, player, guiInventory, slot, event) -> {
+        super("value_" + value, new ButtonState<>("value", material,(cache, guiHandler, player, guiInventory, slot, event) -> {
             if(event instanceof InventoryClickEvent){
-                ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+                ArmorStand stand = cache.getArmorStand();
                 float currentValue = value;
                 if (((InventoryClickEvent) event).isShiftClick()) {
                     currentValue *= 0.001f;
                 }
                 if (slot >= 0 && slot < 8) {
-                    changeValue(player, currentValue, 0, 0);
+                    changeValue(cache, player, currentValue, 0, 0);
                 }
                 if (slot >= 9 && slot < 17) {
-                    changeValue(player, 0, currentValue, 0);
+                    changeValue(cache, player, 0, currentValue, 0);
                 }
                 if (slot >= 18 && slot < 26) {
-                    changeValue(player, 0, 0, currentValue);
+                    changeValue(cache, player, 0, 0, currentValue);
                 }
                 if (slot >= 27 && slot < 35) {
                     Location loc = stand.getLocation();
@@ -51,10 +49,10 @@ public class ValueEditButton extends ActionButton<CustomCache> {
         }));
     }
 
-    private static void changeValue(Player player, float x, float y, float z) {
-        ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+    private static void changeValue(ASTCache cache, Player player, float x, float y, float z) {
+        ArmorStand stand = cache.getArmorStand();
         Location currentLocation = stand.getLocation();
-        switch (ArmorStandTool.getPlayerCache(player).getCurrentOption()) {
+        switch (cache.getCurrentOption()) {
             case POSITION:
                 ArmorStandUtils.teleportStand(stand, currentLocation.add(x, y, z), player);
                 break;
@@ -76,6 +74,8 @@ public class ValueEditButton extends ActionButton<CustomCache> {
             case ROTATION_RIGHT_LEG:
                 stand.setRightLegPose(stand.getRightLegPose().add(x, y, z));
                 break;
+            default:
+                //No option!
         }
     }
 }

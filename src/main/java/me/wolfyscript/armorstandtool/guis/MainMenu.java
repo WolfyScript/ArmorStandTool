@@ -1,24 +1,46 @@
 package me.wolfyscript.armorstandtool.guis;
 
 import me.wolfyscript.armorstandtool.ArmorStandTool;
+import me.wolfyscript.armorstandtool.data.ASTCache;
 import me.wolfyscript.armorstandtool.guis.buttons.EquipmentButton;
 import me.wolfyscript.armorstandtool.guis.buttons.RotatePosSettingsButton;
 import me.wolfyscript.armorstandtool.guis.buttons.ToggleSettingButton;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenu extends ASTGuiWindow {
+
+    private static final String BASE_PLATE = "base_plate";
+    private static final String ARMS = "arms";
+    private static final String SMALL_STAND = "small_stand";
+    private static final String NO_GRAVITY = "no_gravity";
+    private static final String INVISIBLE = "invisible";
+    private static final String DISPLAY_NAME = "display_name";
+
+    private static final String HELMET = "helmet";
+    private static final String CHESTPLATE = "chestplate";
+    private static final String LEGGINGS = "leggings";
+    private static final String BOOTS = "boots";
+    private static final String LEFT_HAND = "left_hand";
+    private static final String RIGHT_HAND = "right_hand";
+
+    private static final String ROT_LEFT_ARM = "rotation_left_arm";
+    private static final String ROT_RIGHT_ARM = "rotation_right_arm";
+    private static final String ROT_LEFT_LEG = "rotation_left_leg";
+    private static final String ROT_RIGHT_LEG = "rotation_right_leg";
+    private static final String ROT_BODY = "rotation_body";
+    private static final String ROT_HEAD = "rotation_head";
+    private static final String POSITION = "position";
+
+    private static final String EQUIP_CONTAINER = "equipment_container_";
 
     public MainMenu(ASTGUICluster cluster) {
         super(cluster, "main_menu", 54);
@@ -26,31 +48,34 @@ public class MainMenu extends ASTGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton<>("base_plate", Material.STONE_PRESSURE_PLATE));
-        registerButton(new DummyButton<>("arms", Material.STICK));
-        registerButton(new DummyButton<>("small_stand", Material.CLAY_BALL));
-        registerButton(new DummyButton<>("no_gravity", Material.RAIL));
-        registerButton(new DummyButton<>("invisible", Material.POTION));
-        registerButton(new DummyButton<>("display_name", Material.NAME_TAG));
+        registerButton(new DummyButton<>(BASE_PLATE, Material.STONE_PRESSURE_PLATE));
+        registerButton(new DummyButton<>(ARMS, Material.STICK));
+        registerButton(new DummyButton<>(SMALL_STAND, Material.CLAY_BALL));
+        registerButton(new DummyButton<>(NO_GRAVITY, Material.RAIL));
+        registerButton(new DummyButton<>(INVISIBLE, Material.POTION));
+        registerButton(new DummyButton<>(DISPLAY_NAME, Material.NAME_TAG));
 
-        for (int i = 0; i < 6; i++) {
-            registerButton(new ToggleSettingButton(i));
-        }
+        registerButton(new ToggleSettingButton(0, ArmorStand::hasBasePlate));
+        registerButton(new ToggleSettingButton(1, ArmorStand::hasArms));
+        registerButton(new ToggleSettingButton(2, ArmorStand::isSmall));
+        registerButton(new ToggleSettingButton(3, ArmorStand::hasGravity));
+        registerButton(new ToggleSettingButton(4, stand -> !stand.isVisible()));
+        registerButton(new ToggleSettingButton(5, ArmorStand::isCustomNameVisible));
 
-        registerButton(new RotatePosSettingsButton("rotation_left_arm", Material.STICK));
-        registerButton(new RotatePosSettingsButton("rotation_left_leg", Material.STICK));
-        registerButton(new RotatePosSettingsButton("rotation_right_arm", Material.STICK));
-        registerButton(new RotatePosSettingsButton("rotation_right_leg", Material.STICK));
-        registerButton(new RotatePosSettingsButton("rotation_body", Material.IRON_CHESTPLATE));
-        registerButton(new RotatePosSettingsButton("rotation_head", Material.IRON_HELMET));
-        registerButton(new RotatePosSettingsButton("position", Material.IRON_BLOCK));
+        registerButton(new RotatePosSettingsButton(ROT_LEFT_ARM, Material.STICK));
+        registerButton(new RotatePosSettingsButton(ROT_LEFT_LEG, Material.STICK));
+        registerButton(new RotatePosSettingsButton(ROT_RIGHT_ARM, Material.STICK));
+        registerButton(new RotatePosSettingsButton(ROT_RIGHT_LEG, Material.STICK));
+        registerButton(new RotatePosSettingsButton(ROT_BODY, Material.IRON_CHESTPLATE));
+        registerButton(new RotatePosSettingsButton(ROT_HEAD, Material.IRON_HELMET));
+        registerButton(new RotatePosSettingsButton(POSITION, Material.IRON_BLOCK));
 
-        registerButton(new DummyButton<>("helmet", Material.LEATHER_HELMET));
-        registerButton(new DummyButton<>("chestplate", Material.LEATHER_CHESTPLATE));
-        registerButton(new DummyButton<>("leggings", Material.LEATHER_LEGGINGS));
-        registerButton(new DummyButton<>("boots", Material.LEATHER_BOOTS));
-        registerButton(new DummyButton<>("left_hand", Material.STICK));
-        registerButton(new DummyButton<>("right_hand", Material.STICK));
+        registerButton(new DummyButton<>(HELMET, Material.LEATHER_HELMET));
+        registerButton(new DummyButton<>(CHESTPLATE, Material.LEATHER_CHESTPLATE));
+        registerButton(new DummyButton<>(LEGGINGS, Material.LEATHER_LEGGINGS));
+        registerButton(new DummyButton<>(BOOTS, Material.LEATHER_BOOTS));
+        registerButton(new DummyButton<>(LEFT_HAND, Material.STICK));
+        registerButton(new DummyButton<>(RIGHT_HAND, Material.STICK));
 
         for (int i = 0; i < 6; i++) {
             registerButton(new EquipmentButton(i));
@@ -58,34 +83,27 @@ public class MainMenu extends ASTGuiWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CustomCache> update) {
+    public void onUpdateSync(GuiUpdate<ASTCache> update) {
         Player player = update.getPlayer();
-        ArmorStand stand = ArmorStandTool.getPlayerCache(update.getPlayer()).getArmorStand();
-        ((ToggleButton<CustomCache>) getButton("toggle_button_0")).setState(update.getGuiHandler(), stand.hasBasePlate());
-        ((ToggleButton<CustomCache>) getButton("toggle_button_1")).setState(update.getGuiHandler(), stand.hasArms());
-        ((ToggleButton<CustomCache>) getButton("toggle_button_2")).setState(update.getGuiHandler(), stand.isSmall());
-        ((ToggleButton<CustomCache>) getButton("toggle_button_3")).setState(update.getGuiHandler(), stand.hasGravity());
-        ((ToggleButton<CustomCache>) getButton("toggle_button_4")).setState(update.getGuiHandler(), !stand.isVisible());
-        ((ToggleButton<CustomCache>) getButton("toggle_button_5")).setState(update.getGuiHandler(), stand.isCustomNameVisible());
 
         List<String> allowedOptions = new ArrayList<>();
         if (player.hasPermission("armorstandtools.option.base_plate")) {
-            allowedOptions.add("base_plate");
+            allowedOptions.add(BASE_PLATE);
         }
         if (player.hasPermission("armorstandtools.option.arms")) {
-            allowedOptions.add("arms");
+            allowedOptions.add(ARMS);
         }
         if (player.hasPermission("armorstandtools.option.small_stand")) {
-            allowedOptions.add("small_stand");
+            allowedOptions.add(SMALL_STAND);
         }
         if (player.hasPermission("armorstandtools.option.no_gravity")) {
-            allowedOptions.add("no_gravity");
+            allowedOptions.add(NO_GRAVITY);
         }
         if (player.hasPermission("armorstandtools.option.invisible")) {
-            allowedOptions.add("invisible");
+            allowedOptions.add(INVISIBLE);
         }
         if (player.hasPermission("armorstandtools.option.display_name")) {
-            allowedOptions.add("display_name");
+            allowedOptions.add(DISPLAY_NAME);
         }
 
         int i = 0;
@@ -96,36 +114,31 @@ public class MainMenu extends ASTGuiWindow {
             i += 9;
         }
 
-        update.setButton(9 + 4, "rotation_head");
-        update.setButton(2 * 9 + 3, "rotation_left_arm");
-        update.setButton(2 * 9 + 4, "rotation_body");
-        update.setButton(2 * 9 + 5, "rotation_right_arm");
-        update.setButton(3 * 9 + 4, "position");
-        update.setButton(4 * 9 + 3, "rotation_left_leg");
-        update.setButton(4 * 9 + 5, "rotation_right_leg");
+        update.setButton(9 + 4, ROT_HEAD);
+        update.setButton(2 * 9 + 3, ROT_LEFT_ARM);
+        update.setButton(2 * 9 + 4, ROT_BODY);
+        update.setButton(2 * 9 + 5, ROT_RIGHT_ARM);
+        update.setButton(3 * 9 + 4, POSITION);
+        update.setButton(4 * 9 + 3, ROT_LEFT_LEG);
+        update.setButton(4 * 9 + 5, ROT_RIGHT_LEG);
 
-        update.setButton(7, "helmet");
-        update.setButton(16, "chestplate");
-        update.setButton(25, "leggings");
-        update.setButton(34, "boots");
-        update.setButton(43, "left_hand");
-        update.setButton(52, "right_hand");
+        update.setButton(7, HELMET);
+        update.setButton(16, CHESTPLATE);
+        update.setButton(25, LEGGINGS);
+        update.setButton(34, BOOTS);
+        update.setButton(43, LEFT_HAND);
+        update.setButton(52, RIGHT_HAND);
 
-        update.setButton(8, "equipment_container_3");
-        update.setButton(17, "equipment_container_2");
-        update.setButton(26, "equipment_container_1");
-        update.setButton(35, "equipment_container_0");
-        update.setButton(44, "equipment_container_4");
-        update.setButton(53, "equipment_container_5");
+        update.setButton(8, EQUIP_CONTAINER + "3");
+        update.setButton(17, EQUIP_CONTAINER + "2");
+        update.setButton(26, EQUIP_CONTAINER + "1");
+        update.setButton(35, EQUIP_CONTAINER + "0");
+        update.setButton(44, EQUIP_CONTAINER + "4");
+        update.setButton(53, EQUIP_CONTAINER + "5");
     }
 
-    @Override
-    public void onUpdateAsync(GuiUpdate update) {
-
-    }
-
-    public static void toggleStandSettings(int slot, Player player) {
-        ArmorStand stand = ArmorStandTool.getPlayerCache(player).getArmorStand();
+    public static void toggleStandSettings(int slot, Player player, ASTCache cache) {
+        ArmorStand stand = cache.getArmorStand();
         switch (slot) {
             case 1:
                 stand.setBasePlate(!stand.hasBasePlate());
@@ -140,8 +153,9 @@ public class MainMenu extends ASTGuiWindow {
                 stand.setGravity(!stand.hasGravity());
                 break;
             case 37:
-                if ((stand.getEquipment() != null && (!stand.getEquipment().getItemInMainHand().getType().equals(Material.AIR) || !stand.getEquipment().getItemInOffHand().getType().equals(Material.AIR))) || !stand.getHelmet().getType().equals(Material.AIR) || !stand.getChestplate().getType().equals(Material.AIR) || !stand.getLeggings().getType().equals(Material.AIR) || !stand.getBoots().getType().equals(Material.AIR)) {
-                    if (ArmorStandTool.getAPI().getPermissions().hasPermission(player, "armorstandtool.edit.invisible")) {
+                if (ArmorStandTool.inst().getAPI().getPermissions().hasPermission(player, "armorstandtool.edit.invisible") && stand.getEquipment() != null) {
+                    EntityEquipment equip = stand.getEquipment();
+                    if((!ItemUtils.isAirOrNull(equip.getItemInMainHand()) || !ItemUtils.isAirOrNull(equip.getItemInOffHand()) || !ItemUtils.isAirOrNull(equip.getHelmet()) || !ItemUtils.isAirOrNull(equip.getChestplate()) || !ItemUtils.isAirOrNull(equip.getLeggings()) || !ItemUtils.isAirOrNull(equip.getBoots()))) {
                         stand.setVisible(!stand.isVisible());
                     }
                 }
@@ -149,6 +163,8 @@ public class MainMenu extends ASTGuiWindow {
             case 46:
                 stand.setCustomNameVisible(!stand.isCustomNameVisible());
                 break;
+            default:
+                //None
         }
     }
 

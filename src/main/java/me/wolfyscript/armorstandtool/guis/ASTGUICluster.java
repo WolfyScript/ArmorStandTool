@@ -1,12 +1,12 @@
 package me.wolfyscript.armorstandtool.guis;
 
+import me.wolfyscript.armorstandtool.data.ASTCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 
-public class ASTGUICluster extends GuiCluster<CustomCache> {
+public class ASTGUICluster extends GuiCluster<ASTCache> {
 
-    public ASTGUICluster(InventoryAPI<CustomCache> inventoryAPI, String id) {
+    public ASTGUICluster(InventoryAPI<ASTCache> inventoryAPI, String id) {
         super(inventoryAPI, id);
     }
 
