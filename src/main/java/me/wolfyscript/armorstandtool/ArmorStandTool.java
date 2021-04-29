@@ -1,19 +1,13 @@
 package me.wolfyscript.armorstandtool;
 
-import me.wolfyscript.armorstandtool.commands.LocateArmorStandsCommand;
 import me.wolfyscript.armorstandtool.configs.ArmorStandToolConfig;
-import me.wolfyscript.armorstandtool.data.FreeEditMode;
-import me.wolfyscript.armorstandtool.data.OptionType;
-import me.wolfyscript.armorstandtool.data.PlayerCache;
+import me.wolfyscript.armorstandtool.data.ASTCache;
 import me.wolfyscript.armorstandtool.guis.ASTGUICluster;
-import me.wolfyscript.armorstandtool.guis.MainMenu;
-import me.wolfyscript.armorstandtool.guis.SettingsGui;
 import me.wolfyscript.armorstandtool.listener.FreeEditListener;
+import me.wolfyscript.armorstandtool.listener.PlayerListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -26,44 +20,52 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ArmorStandTool extends JavaPlugin implements Listener {
 
     private static ArmorStandTool instance;
-    private static WolfyUtilities wolfyUtilities;
-    private static ArmorStandToolConfig config;
+    private static final String CONFIG_FILE = "config.json";
 
-    public static HashMap<String, ArmorStand> currentlyActive = new HashMap<>();
-    private static HashMap<String, PlayerCache> playerCaches = new HashMap<>();
+    private ArmorStandToolConfig config;
+    private final WolfyUtilities api;
 
-    public void onLoad() {
+    private final Map<UUID, ArmorStand> currentlyActive;
+
+    public ArmorStandTool(){
+        super();
         instance = this;
+        this.currentlyActive = new HashMap<>();
+        api = WolfyUtilities.get(instance, false);
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, ASTCache.class));
+        Chat chat = api.getChat();
+        chat.setInGamePrefix("§3[§7AST§3] §7");
     }
 
-    public void onEnable() {
-        wolfyUtilities = WolfyUtilities.get(instance);
-        Chat chat = wolfyUtilities.getChat();
-        chat.setIN_GAME_PREFIX("§3[§7AST§3] §7");
-        chat.setCONSOLE_PREFIX("[AST] ");
+    public static ArmorStandTool inst(){
+        return instance;
+    }
 
-        InventoryAPI<CustomCache> inventoryAPI = wolfyUtilities.getInventoryAPI(CustomCache.class);
+    public WolfyUtilities getAPI() {
+        return api;
+    }
+
+    @Override
+    public void onEnable() {
+        api.initialize();
+        InventoryAPI<ASTCache> inventoryAPI = api.getInventoryAPI(ASTCache.class);
 
         //Load Config
         try {
-            saveResource("config.json", false);
-            config = JacksonUtil.getObjectMapper().readValue(new File(getDataFolder(), "config.json"), ArmorStandToolConfig.class);
+            saveResource(CONFIG_FILE, false);
+            config = JacksonUtil.getObjectMapper().readValue(new File(getDataFolder(), CONFIG_FILE), ArmorStandToolConfig.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,28 +74,22 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
 
         inventoryAPI.registerCluster(new ASTGUICluster(inventoryAPI, "main"));
 
-        //Bukkit.getPluginCommand("locatestands").setExecutor(new LocateArmorStandsCommand());
-
         Bukkit.getPluginManager().registerEvents(this, instance);
         Bukkit.getPluginManager().registerEvents(new FreeEditListener(), instance);
         Metrics metrics = new Metrics(this, 5222);
     }
 
+    @Override
     public void onDisable() {
         try {
-            JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), "config.json"), config);
+            JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), CONFIG_FILE), config);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    public static ArmorStandTool getInstance() {
-        return instance;
-    }
-
     public void loadLanguage() {
-        LanguageAPI languageAPI = wolfyUtilities.getLanguageAPI();
+        LanguageAPI languageAPI = api.getLanguageAPI();
         String lang = config.getLang();
         saveResource("lang/en_US.json", true);
         saveResource("lang/de_DE.json", true);
@@ -101,7 +97,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         Language fallBackLanguage = new Language(this, "en_US");
 
         languageAPI.registerLanguage(fallBackLanguage);
-        System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join("", fallBackLanguage.getAuthors()));
+        api.getConsole().info("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join("", fallBackLanguage.getAuthors()));
 
         File file = new File(getDataFolder(), "lang/" + lang + ".json");
         if (file.exists()) {
@@ -171,7 +167,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    wolfyUtilities.getChat().sendMessages(p,
+                    api.getChat().sendMessages(p,
                             "~*~*~*~*&6[&3&lArmorStandTool&6]&7~*~*~*~*~",
                             "",
                             "        &n     by &b&n&lWolfyScript&7&n      ",
@@ -188,17 +184,17 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
                         e.printStackTrace();
                     }
 
-                    InventoryAPI<?> inventoryAPI = wolfyUtilities.getInventoryAPI();
+                    InventoryAPI<?> inventoryAPI = api.getInventoryAPI();
                     inventoryAPI.reset();
                     loadLanguage();
 
                     inventoryAPI.reset();
 
-                    Chat chat = wolfyUtilities.getChat();
+                    Chat chat = api.getChat();
                     if (sender instanceof Player) {
                         chat.sendMessage((Player) sender, "$msg.reload.complete$");
                     } else {
-                        chat.sendConsoleMessage("$msg.reload.complete$");
+                        api.getConsole().info("$msg.reload.complete$");
                     }
                 }
             }
@@ -206,33 +202,29 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         return true;
     }
 
-    public static HashMap<String, PlayerCache> getPlayerCaches() {
-        return playerCaches;
-    }
-
-    public static PlayerCache getPlayerCache(Player player) {
-        PlayerCache playerCache = getPlayerCaches().get(player.getUniqueId().toString());
-        if (playerCache == null) {
-            playerCache = new PlayerCache();
-            getPlayerCaches().put(player.getUniqueId().toString(), playerCache);
-        }
-        return playerCache;
-    }
-
-    private boolean hasPerm(Location location, Player player) {
+    public boolean hasPerm(Location location, Player player) {
         if (WolfyUtilities.hasPlotSquared() && PSUtils.isPlotWorld(location.getWorld())) {
-            if (PSUtils.hasPerm(player, location)) {
-                return true;
-            }
+            return PSUtils.hasPerm(player, location);
         } else if (WolfyUtilities.hasWorldGuard()) {
             return WGUtils.hasPermBuild(location, player);
         } else {
             return true;
         }
-        return false;
     }
 
-    public static WolfyUtilities getAPI() {
-        return wolfyUtilities;
+    public ArmorStandToolConfig getASTConfig() {
+        return config;
+    }
+
+    public void setActive(Player player, ArmorStand armorStand){
+        currentlyActive.put(player.getUniqueId(), armorStand);
+    }
+
+    public boolean isActive(ArmorStand stand) {
+        return currentlyActive.containsValue(stand);
+    }
+
+    public ArmorStand getActive(Player player){
+        return currentlyActive.get(player.getUniqueId());
     }
 }
