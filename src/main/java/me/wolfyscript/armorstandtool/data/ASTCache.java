@@ -1,9 +1,10 @@
 package me.wolfyscript.armorstandtool.data;
 
+import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 
-public class PlayerCache {
+public class ASTCache extends CustomCache {
 
     private OptionType currentOption;
     private ArmorStand armorStand;
@@ -12,7 +13,7 @@ public class PlayerCache {
     private Location freeEditStandPos;
     private double lastDis;
 
-    public PlayerCache(){
+    public ASTCache(){
         this.freeEdit = FreeEditMode.NONE;
         this.currentOption = OptionType.NONE;
         lastDis = -9999d;
