@@ -75,7 +75,8 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
         inventoryAPI.registerCluster(new ASTGUICluster(inventoryAPI, "main"));
 
         Bukkit.getPluginManager().registerEvents(this, instance);
-        Bukkit.getPluginManager().registerEvents(new FreeEditListener(), instance);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), instance);
+        Bukkit.getPluginManager().registerEvents(new FreeEditListener(this), instance);
         Metrics metrics = new Metrics(this, 5222);
     }
 
@@ -104,60 +105,7 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             Language language = new Language(this, lang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
-            System.out.println("Loaded active language \"" + lang + "\" v" + language.getVersion() + " translated by " + String.join("", language.getAuthors()));
-        }
-    }
-
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onInteract(PlayerInteractAtEntityEvent event) {
-        Player player = event.getPlayer();
-        PlayerCache playerCache = getPlayerCache(player);
-        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
-            event.setCancelled(true);
-            wolfyUtilities.getChat().sendMessages(player, "$msg.free_edit.cancelled$");
-            playerCache.setFreeEditLoc(null);
-            playerCache.setFreeEdit(FreeEditMode.NONE);
-        } else if (!event.isCancelled() && event.getRightClicked() instanceof ArmorStand && (!currentlyActive.containsValue(event.getRightClicked()) || event.getRightClicked().equals(currentlyActive.get(player.getUniqueId().toString()))) && hasPerm(event.getRightClicked().getLocation(), player)) {
-            if (player.isSneaking()) {
-                getPlayerCache(player).setArmorStand((ArmorStand) event.getRightClicked());
-                currentlyActive.put(player.getUniqueId().toString(), (ArmorStand) event.getRightClicked());
-                wolfyUtilities.getInventoryAPI().openCluster(player, "main");
-                event.setCancelled(true);
-            }
-        } else if (event.getRightClicked() instanceof ArmorStand && player.isSneaking()) {
-            wolfyUtilities.getChat().sendMessages(player, "$msg.edit.open.cancelled$");
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player && event.getEntity() instanceof ArmorStand) {
-            Player player = (Player) event.getDamager();
-            PlayerCache playerCache = getPlayerCache(player);
-            if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
-                event.setCancelled(true);
-                wolfyUtilities.getChat().sendMessage(player, "$msg.free_edit.cancelled$");
-                playerCache.setFreeEditLoc(null);
-                playerCache.setFreeEdit(FreeEditMode.NONE);
-            } else if (!config.isArmorStandKnockback()) {
-                Location loc = event.getEntity().getLocation();
-                Bukkit.getScheduler().runTaskLater(this, () -> {
-                    event.getEntity().setVelocity(new Vector(0, 0, 0));
-                    event.getEntity().teleport(loc);
-                }, 1);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        PlayerCache playerCache = getPlayerCache(event.getPlayer());
-        if (!playerCache.getCurrentOption().equals(OptionType.NONE) && !playerCache.getFreeEdit().equals(FreeEditMode.NONE)) {
-            event.setCancelled(true);
-            wolfyUtilities.getChat().sendMessage(event.getPlayer(), "$msg.free_edit.cancelled$");
-            playerCache.setFreeEditLoc(null);
-            playerCache.setFreeEdit(FreeEditMode.NONE);
+            api.getConsole().info("Loaded active language \"" + lang + "\" v" + language.getVersion() + " translated by " + String.join("", language.getAuthors()));
         }
     }
 
