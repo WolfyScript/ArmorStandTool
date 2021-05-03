@@ -14,19 +14,21 @@ public class ArmorStandUtils {
     private ArmorStandUtils(){ }
 
     public static boolean teleportStand(ArmorStand stand, Location location, Player player) {
-        if (WolfyUtilities.hasPlotSquared() && PSUtils.isPlotWorld(location.getWorld())) {
-            if (PSUtils.hasPerm(player, location)) {
+        if(location != null && location.getWorld() != null) {
+            if (WolfyUtilities.hasPlotSquared() && PSUtils.isPlotWorld(location.getWorld())) {
+                if (PSUtils.hasPerm(player, location)) {
+                    stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    return true;
+                }
+                return false;
+            } else if (WolfyUtilities.hasWorldGuard()) {
+                return WGUtils.teleportEntity(stand, location, player);
+            } else {
                 stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
                 return true;
             }
-            return false;
-        } else if (WolfyUtilities.hasWorldGuard()) {
-            return WGUtils.teleportEntity(stand, location, player);
-        } else {
-            stand.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            return true;
         }
-
+        return false;
     }
 
     public static EulerAngle resetRotation(EulerAngle pose, String xyz) {
