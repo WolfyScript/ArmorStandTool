@@ -64,8 +64,11 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
 
         //Load Config
         try {
-            saveResource(CONFIG_FILE, false);
-            config = JacksonUtil.getObjectMapper().readValue(new File(getDataFolder(), CONFIG_FILE), ArmorStandToolConfig.class);
+            File file = new File(getDataFolder(), CONFIG_FILE);
+            if(!file.exists()){
+                saveResource(CONFIG_FILE, false);
+            }
+            config = JacksonUtil.getObjectMapper().readValue(file, ArmorStandToolConfig.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,8 +129,8 @@ public class ArmorStandTool extends JavaPlugin implements Listener {
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("armorstandtool.reload")) {
                     try {
-                        JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), "config.json"), config);
-                        config = JacksonUtil.getObjectMapper().readValue(new File(getDataFolder(), "config.json"), ArmorStandToolConfig.class);
+                        JacksonUtil.getObjectWriter(true).writeValue(new File(getDataFolder(), CONFIG_FILE), config);
+                        config = JacksonUtil.getObjectMapper().readValue(new File(getDataFolder(), CONFIG_FILE), ArmorStandToolConfig.class);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
